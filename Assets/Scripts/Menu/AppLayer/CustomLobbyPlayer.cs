@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Prototype.NetworkLobby;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -8,10 +9,14 @@ namespace AppLayer
 {
     public class CustomLobbyPlayer : LobbyPlayer
     {
-        [SerializeField] private Dropdown raceDropdown;
-        [SyncVar(hook ="OnTeamChange")] public int TeamID;
+        [SerializeField] private Dropdown factionsDropdown;
+        public int TeamID
+        {
+            get { return Array.IndexOf(LobbyPlayer.Colors, playerColor); }
+        }
 
-        [SyncVar(hook = "OnRaceIndexChange")] public int RaceInfoIndex;
+        [SyncVar(hook = "OnFactionIndexChange")]
+        public int factionInfoIndex;
 
         private CustomNetworkLobbyManager customLobbyManager;
 
@@ -21,13 +26,16 @@ namespace AppLayer
             customLobbyManager = GameObject.FindGameObjectWithTag("LobbyManager")
                 .GetComponent<CustomNetworkLobbyManager>();
             //LobbyPlayerList._instance.AddPlayer(this);
-            for (int i = 0; i < transform.root.GetComponent<CustomNetworkLobbyManager>().playableRaces.Count; i++)
+            for (int i = 0; i < customLobbyManager.playableFactions.Count; i++)
             {
-                raceDropdown.options.Add(new Dropdown.OptionData());
-                raceDropdown.options[i].text =
-                    transform.root.GetComponent<CustomNetworkLobbyManager>().playableRaces[i].name;
+                factionsDropdown.options.Add(new Dropdown.OptionData());
+                factionsDropdown.options[i].text =
+                    customLobbyManager.playableFactions[i].name;
             }
+        }
 
+        private void Start()
+        {
             if (isLocalPlayer)
             {
                 SetupLocalPlayer();
@@ -36,45 +44,41 @@ namespace AppLayer
             {
                 SetupOtherPlayer();
             }
+
             //setup the player data on UI. The value are SyncVar so the player
             //will be created with the right value currently on server
-            OnRaceIndexChange(RaceInfoIndex);
-            OnTeamChange(TeamID);
+            OnFactionIndexChange(factionInfoIndex);
+            OnMyName(playerName);
+            OnMyColor(playerColor);
         }
-        void  SetupOtherPlayer()
+
+
+        void SetupOtherPlayer()
         {
             base.SetupOtherPlayer();
-            raceDropdown.interactable = false;
+            factionsDropdown.interactable = false;
         }
 
         void SetupLocalPlayer()
         {
-          base.SetupLocalPlayer();
-            raceDropdown.interactable = true;
+            base.SetupLocalPlayer();
+            factionsDropdown.interactable = true;
         }
 
 
-        private void OnTeamChange(int id)
+        //callback from synchvar
+        private void OnFactionIndexChange(int index)
         {
-            if (isLocalPlayer)
-            {
-                CmdNameChanged(name);
-            }
-
-            else
-            {
-                TeamID = id;
-            }
-            
-
+            factionInfoIndex = index;
+            factionsDropdown.value = index;
         }
-        private void OnRaceIndexChange(int index)
+
+        //when drop down is interracted with by the client
+        public void OnFactionDropDownValueChanged()
         {
-            raceDropdown.value = index;
-            if (isLocalPlayer)
-                CmdRaceIndexChanged(index);
+            //ask server if modif is okay
+            CmdFactionIndexChanged(factionsDropdown.value);
         }
-
         //executed only ons server
 
         #region Commands
@@ -85,15 +89,11 @@ namespace AppLayer
             playerName = name;
         }
 
+
         [Command]
-        public void CmdTeamChanged(int iD)
+        public void CmdFactionIndexChanged(int index)
         {
-            TeamID = iD;
-        }
-        [Command]
-        public void CmdRaceIndexChanged(int index)
-        {
-            RaceInfoIndex = index;
+            factionInfoIndex = index;
         }
 
         #endregion
