@@ -63,12 +63,11 @@ public class Pathfinder : MonoBehaviour
             //Then destroy this. This enforces our singleton pattern, meaning there can only ever be one instance of a GameManager.
             Destroy(gameObject);
 
-        //Sets this to not be destroyed when reloading scene
-        DontDestroyOnLoad(gameObject);
 
         grid = GetComponent<Grid>();
         nodesMap =new Dictionary<Vector3Int, Node>();
         //todo:find a way to make it work with uneaven tilemaps
+        
         for (int x = -walkable.size.x/2; x < walkable.size.x/2 ; x++)
         {
             for (int y = -walkable.size.y/2; y < walkable.size.y /2; y++)

@@ -40,7 +40,6 @@ GameObject:
   - component: {fileID: 114352671102469804}
   - component: {fileID: 114733839917811418}
   - component: {fileID: 114843742058827188}
-  - component: {fileID: 114685885898565982}
   m_Layer: 0
   m_Name: GamePlayer
   m_TagString: Untagged
@@ -774,22 +773,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 827ff6eb77f86fb448035429740df002, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &114685885898565982
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1100766038533336}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f2a5d50a55e4477a8637fdb413501ff0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _factionInfo: {fileID: 0}
-  unitContainerPrefab: {fileID: 1232228107389882, guid: fadba8a5f3bf64847bd5d166038c9622,
-    type: 2}
-  networkController: {fileID: 0}
-  factionIndex: 0
 --- !u!114 &114733839917811418
 MonoBehaviour:
   m_ObjectHideFlags: 1

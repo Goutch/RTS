@@ -1,72 +1,128 @@
-﻿using Boo.Lang;
+﻿using System.Collections;
+using System.Collections.Generic;
 using DefaultNamespace;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.SceneManagement;
 
-namespace AppLayer
+public delegate void RTSNetworkManagerEventHandler();
+
+public class RTSNetworkManager : NetworkManager
 {
-    public delegate void RTSNetworkManagerEventHandler();
-    public class RTSNetworkManager : NetworkManager
+    [SerializeField] private UnitFactionData[] playableFactions;
+    [SerializeField] SceneAsset PlayScene;
+    public UnitFactionData[] PlayableFactions => playableFactions;
+    private List<NetworkPlayerConnection> connectedPlayers;
+
+    public List<NetworkPlayerConnection> ConnectedPlayers => connectedPlayers;
+
+    private int ReadyForNextStatePlayersCount = 0;
+
+    private NetworkState _currentNetworkState;
+
+    public NetworkState CurrentNetworkState
     {
-        [SerializeField]private UnitFactionInfo[] playableFactions;
-
-        public UnitFactionInfo[] PlayableFactions => playableFactions;
-        private List<NetworkPlayer> connectedPlayers;
-        
-        private NetworkState _currentNetworkState;
-        public NetworkState CurrentNetworkState
+        private set
         {
-            private set
+            _currentNetworkState = value;
+            Debug.Log("NetworkState changed to:" + value);
+            if (OnNetworkStateChange != null)
+                OnNetworkStateChange();
+        }
+        get { return _currentNetworkState; }
+    }
+
+
+    public event RTSNetworkManagerEventHandler OnNetworkStateChange;
+
+
+    public enum NetworkState
+    {
+        Disconected,
+        PreGameLobby,
+        LoadingGame,
+        InGame,
+        EndGameLobby
+    }
+
+
+    private void Start()
+    {
+        CurrentNetworkState = NetworkState.Disconected;
+    }
+
+    public override void OnClientDisconnect(NetworkConnection conn)
+    {
+        base.OnClientDisconnect(conn);
+        CurrentNetworkState = NetworkState.Disconected;
+    }
+
+    public void RegisterPlayer(NetworkPlayerConnection newNetworkPlayerConnection)
+    {
+        if (connectedPlayers == null)
+            connectedPlayers = new List<NetworkPlayerConnection>();
+        connectedPlayers.Add(newNetworkPlayerConnection);
+    }
+
+    public void UnRegisterPlayer(NetworkPlayerConnection networkPlayerConnectionToRemove)
+    {
+        if (connectedPlayers == null)
+            connectedPlayers = new List<NetworkPlayerConnection>();
+        connectedPlayers.Remove(networkPlayerConnectionToRemove);
+    }
+
+    public override void OnClientConnect(NetworkConnection conn)
+    {
+        MainMenu.instance.ChangeToLobbyPanel();
+        CurrentNetworkState = NetworkState.PreGameLobby;
+        GetComponent<LobbyEventChannel>().OnLobbyPlayerSpawned += OnLobbyPlayerSpawn;
+        base.OnClientConnect(conn);
+    }
+
+    private void OnLobbyPlayerSpawn(NetworkInstanceId lobbyPlayerID)
+    {
+        LobbyPlayerManager lobbyPlayer =
+            ClientScene.FindLocalObject(lobbyPlayerID).GetComponent<LobbyPlayerManager>();
+        lobbyPlayer.OnReadyChanged += AddReadyLobbyPlayer;
+    }
+
+    private void AddReadyLobbyPlayer()
+    {
+        ReadyForNextStatePlayersCount++;
+        if (ReadyForNextStatePlayersCount == connectedPlayers.Count)
+        {
+            ReadyForNextStatePlayersCount = 0;
+            StartCoroutine(StartGameCountDownRoutine(3));
+        }
+    }
+
+    public IEnumerator StartGameCountDownRoutine(int seconds)
+    {
+        for (int i = seconds; i > 0; i--)
+        {
+            yield return new WaitForSeconds(1);
+        }
+
+        ServerChangeScene(PlayScene.name);
+        CurrentNetworkState = NetworkState.LoadingGame;
+    }
+
+    public override void OnClientSceneChanged(NetworkConnection conn)
+    {
+        base.OnClientSceneChanged(conn);
+        if (_currentNetworkState == NetworkState.LoadingGame)
+        {
+            foreach (var player in connectedPlayers)
             {
-                _currentNetworkState = value;
-                Debug.Log("NetworkState changed to:"+value);
-                if (OnNetworkStateChange != null)
-                    OnNetworkStateChange();
+                player.OnEnterGameScene();
             }
-            get { return _currentNetworkState; }
-        }
-        public event RTSNetworkManagerEventHandler OnNetworkStateChange;
-        public enum NetworkState
-        {
-            Disconected,
-            PreGameLobby,
-            LoadingGame,
-            InGame,
-            EndGameLobby 
-        }
 
-        private void Start()
-        {
-            CurrentNetworkState = NetworkState.Disconected;
+            GameObject.FindGameObjectWithTag("GameController").GetComponent<GameLoader>().OnSceneChanged();
         }
-         
-        public void RegisterPlayer(NetworkPlayer newNetworkPlayer)
-        {
-            if(connectedPlayers==null)
-                connectedPlayers=new List<NetworkPlayer>();
-            connectedPlayers.Add(newNetworkPlayer);
-        }
+    }
 
-        public void UnRegisterPlayer(NetworkPlayer networkPlayerToRemove)
-        {
-            if(connectedPlayers==null)
-                connectedPlayers=new List<NetworkPlayer>();
-            connectedPlayers.Remove(networkPlayerToRemove);
-        }
-
-        public override void OnClientConnect(NetworkConnection conn)
-        {
-            base.OnClientConnect(conn);
-            MainMenu.instance.ChangeToLobbyPanel();
-            CurrentNetworkState = NetworkState.PreGameLobby;
-            
-        }
-
-        public override void OnClientDisconnect(NetworkConnection conn)
-        {
-            base.OnClientDisconnect(conn);
-            CurrentNetworkState = NetworkState.Disconected;
-        }
+    public void OnLoadingFinish()
+    {
+        CurrentNetworkState = NetworkState.InGame;
     }
 }

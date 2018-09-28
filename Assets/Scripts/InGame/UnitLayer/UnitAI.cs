@@ -12,16 +12,16 @@ namespace DefaultNamespace
         [SerializeField] private Command.CommandType[] executableCommands;
         private Mover mover;
         private Sight sight;
-        private UnitInfo info;
+        private UnitData _data;
         private List<Vector3> path;
         private Command command;
         private Queue<Command> commandsQueue;
 
-        public void Init(Mover mover, Sight sight, UnitInfo info)
+        public void Init(Mover mover, Sight sight, UnitData data)
         {
             this.mover = mover;
             this.sight = sight;
-            this.info = info;
+            this._data = data;
             path = new List<Vector3>();
             commandsQueue = new Queue<Command>();
         }
@@ -112,14 +112,14 @@ namespace DefaultNamespace
                 return;
             }
 
-            mover.MoveAndRotateToward(path.First(), info.speed.Value);
+            mover.MoveAndRotateToward(path.First(), _data.speed.Value);
         }
 
         private void Attack(Transform targeTransform)
         {
             if(targeTransform==null)
                 OnCommandExecuted();
-            if (Vector2.Distance(mover.transform.position, targeTransform.position) <= info.attackRange.Value)
+            if (Vector2.Distance(mover.transform.position, targeTransform.position) <= _data.attackRange.Value)
             {
                 
             }

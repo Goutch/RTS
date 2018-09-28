@@ -11,7 +11,7 @@ namespace DefaultNamespace
 {
     public class UnitController : NetworkBehaviour, IUnit
     {
-        private UnitInfo info;
+        private UnitData _data;
         [SerializeField] private SpriteRenderer selectedCircle;
         private int teamID;
 
@@ -25,27 +25,27 @@ namespace DefaultNamespace
         private List<bool> AbilitesAvalable;
 
 
-        public void Init(UnitInfo infoPrefab, int teamID, Transform parent)
+        public void Init(UnitData dataPrefab, int teamID, Transform parent)
         {
             transform.parent = parent;
             this.teamID = teamID;
-            this.info = Instantiate(infoPrefab);
-            this.info.Init();
+            this._data = Instantiate(dataPrefab);
+            this._data.Init();
             AbilitesAvalable = new List<bool>();
             mover = GetComponent<Mover>();
             sight = GetComponentInChildren<Sight>();
             visual = GetComponentInChildren<SpriteRenderer>();
 
-            AI = Instantiate(info.AI);
-            AI.Init(mover, sight, info);
+            AI = Instantiate(_data.AI);
+            AI.Init(mover, sight, _data);
 
-            selectedCircle.transform.localScale = (info.size.Value / 32) * .5f * Vector2.one;
+            selectedCircle.transform.localScale = (_data.size.Value / 32) * .5f * Vector2.one;
 
-            this.name = info.Name;
+            this.name = _data.Name;
 
-            this.GetComponent<Rigidbody2D>().mass = info.mass.Value;
-            this.GetComponentInChildren<SpriteRenderer>().sprite = info.Sprite;
-            this.GetComponent<CircleCollider2D>().radius = info.size.Value / 200;
+            this.GetComponent<Rigidbody2D>().mass = _data.mass.Value;
+            this.GetComponentInChildren<SpriteRenderer>().sprite = _data.Sprite;
+            this.GetComponent<CircleCollider2D>().radius = _data.size.Value / 200;
 
             this.GetComponent<Selectable>().Init();
         }
@@ -105,7 +105,7 @@ namespace DefaultNamespace
             AbilitesAvalable[Index] = false;
             //start animation
             //todo: network.spawn projectile or serveronly callback on projevtiles so it only get called on server
-            yield return new WaitForSeconds(info.Abilities[Index].Cooldown);
+            yield return new WaitForSeconds(_data.Abilities[Index].Cooldown);
 
             AbilitesAvalable[Index] = true;
         }

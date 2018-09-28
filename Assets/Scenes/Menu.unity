@@ -776,6 +776,33 @@ CanvasRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1079619717}
   m_CullTransparentMesh: 0
+--- !u!1 &1109983288 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1363567563039200, guid: c27054c25b499904eab6cb58f7eeec01,
+    type: 2}
+  m_PrefabInternal: {fileID: 1890329828}
+--- !u!114 &1109983289
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1109983288}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbf34a89f73e4357abce777e254ddf68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1109983290
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1109983288}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da3a79960a0f4ed59ad4dfc12dfaf6cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1314184904
 GameObject:
   m_ObjectHideFlags: 0
@@ -1185,22 +1212,17 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 114694837077302066, guid: c27054c25b499904eab6cb58f7eeec01,
-        type: 2}
-      propertyPath: playableFactions.Array.size
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 4690238312084896, guid: c27054c25b499904eab6cb58f7eeec01, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 440.60043
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4690238312084896, guid: c27054c25b499904eab6cb58f7eeec01, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 201.81302
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4690238312084896, guid: c27054c25b499904eab6cb58f7eeec01, type: 2}
       propertyPath: m_LocalPosition.z
-      value: -7.866451
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4690238312084896, guid: c27054c25b499904eab6cb58f7eeec01, type: 2}
       propertyPath: m_LocalRotation.x
@@ -1224,42 +1246,10 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 114694837077302066, guid: c27054c25b499904eab6cb58f7eeec01,
         type: 2}
-      propertyPath: m_OfflineScene
+      propertyPath: PlayScene
       value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 114694837077302066, guid: c27054c25b499904eab6cb58f7eeec01,
-        type: 2}
-      propertyPath: m_OnlineScene
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 114694837077302066, guid: c27054c25b499904eab6cb58f7eeec01,
-        type: 2}
-      propertyPath: m_UseWebSockets
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114694837077302066, guid: c27054c25b499904eab6cb58f7eeec01,
-        type: 2}
-      propertyPath: m_ServerBindToIP
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114694837077302066, guid: c27054c25b499904eab6cb58f7eeec01,
-        type: 2}
-      propertyPath: playableFactions.Array.data[1]
-      value: 
-      objectReference: {fileID: 11400000, guid: d650b46302965a540b16ee97fc985ff9,
-        type: 2}
-    - target: {fileID: 114694837077302066, guid: c27054c25b499904eab6cb58f7eeec01,
-        type: 2}
-      propertyPath: playableFactions.Array.data[0]
-      value: 
-      objectReference: {fileID: 11400000, guid: 06e1a519ec53f1643a11aa38c2062827,
-        type: 2}
-    - target: {fileID: 114694837077302066, guid: c27054c25b499904eab6cb58f7eeec01,
-        type: 2}
-      propertyPath: m_SpawnPrefabs.Array.data[0]
-      value: 
-      objectReference: {fileID: 1650598374556678, guid: 4e94f168cbecdb74ea6cd58ffe69310d,
-        type: 2}
+      objectReference: {fileID: 102900000, guid: 2cda990e2423bbf4892e6590ba056729,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c27054c25b499904eab6cb58f7eeec01, type: 2}
   m_IsPrefabAsset: 0
