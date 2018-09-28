@@ -1250,6 +1250,11 @@ Prefab:
       value: 
       objectReference: {fileID: 102900000, guid: 2cda990e2423bbf4892e6590ba056729,
         type: 3}
+    - target: {fileID: 114694837077302066, guid: c27054c25b499904eab6cb58f7eeec01,
+        type: 2}
+      propertyPath: m_OnlineScene
+      value: Game
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c27054c25b499904eab6cb58f7eeec01, type: 2}
   m_IsPrefabAsset: 0

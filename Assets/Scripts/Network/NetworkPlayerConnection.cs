@@ -33,7 +33,6 @@ public class NetworkPlayerConnection : NetworkBehaviour
         _networkManager.RegisterPlayer(this);
         _networkManager.OnNetworkStateChange += HandleNetworkStateChange;
         _networkManager.GetComponent<LobbyEventChannel>().OnLobbyPlayerSpawned += SetReferenceToLobbyPlayer;
-
         Debug.Log("Client Network Player start");
     }
 

@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using DefaultNamespace;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -10,7 +9,7 @@ public delegate void RTSNetworkManagerEventHandler();
 public class RTSNetworkManager : NetworkManager
 {
     [SerializeField] private UnitFactionData[] playableFactions;
-    [SerializeField] SceneAsset PlayScene;
+    
     public UnitFactionData[] PlayableFactions => playableFactions;
     private List<NetworkPlayerConnection> connectedPlayers;
 
@@ -48,6 +47,7 @@ public class RTSNetworkManager : NetworkManager
 
     private void Start()
     {
+        
         CurrentNetworkState = NetworkState.Disconected;
     }
 
@@ -103,7 +103,7 @@ public class RTSNetworkManager : NetworkManager
             yield return new WaitForSeconds(1);
         }
 
-        ServerChangeScene(PlayScene.name);
+        ServerChangeScene(onlineScene);
         CurrentNetworkState = NetworkState.LoadingGame;
     }
 
