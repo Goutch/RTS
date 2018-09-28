@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using DefaultNamespace;
 using UnityEngine;
@@ -9,7 +10,7 @@ public delegate void RTSNetworkManagerEventHandler();
 public class RTSNetworkManager : NetworkManager
 {
     [SerializeField] private UnitFactionData[] playableFactions;
-    
+    [SerializeField] private string playSceneName;
     public UnitFactionData[] PlayableFactions => playableFactions;
     private List<NetworkPlayerConnection> connectedPlayers;
 
@@ -103,7 +104,7 @@ public class RTSNetworkManager : NetworkManager
             yield return new WaitForSeconds(1);
         }
 
-        ServerChangeScene(onlineScene);
+        ServerChangeScene(playSceneName);
         CurrentNetworkState = NetworkState.LoadingGame;
     }
 

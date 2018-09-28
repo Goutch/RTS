@@ -32,6 +32,7 @@ public class MainMenu : MonoBehaviour
 
     public void OnClickHost()
     {
+        ChangeToLobbyPanel();
         RTSNetworkManager.singleton.StartHost();
     }
 

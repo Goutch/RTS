@@ -46,8 +46,6 @@ namespace DefaultNamespace
             this.GetComponent<Rigidbody2D>().mass = _data.mass.Value;
             this.GetComponentInChildren<SpriteRenderer>().sprite = _data.Sprite;
             this.GetComponent<CircleCollider2D>().radius = _data.size.Value / 200;
-
-            this.GetComponent<Selectable>().Init();
         }
 
         private void Update()

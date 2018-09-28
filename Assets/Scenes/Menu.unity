@@ -1253,6 +1253,11 @@ Prefab:
     - target: {fileID: 114694837077302066, guid: c27054c25b499904eab6cb58f7eeec01,
         type: 2}
       propertyPath: m_OnlineScene
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 114694837077302066, guid: c27054c25b499904eab6cb58f7eeec01,
+        type: 2}
+      propertyPath: playSceneName
       value: Game
       objectReference: {fileID: 0}
     m_RemovedComponents: []

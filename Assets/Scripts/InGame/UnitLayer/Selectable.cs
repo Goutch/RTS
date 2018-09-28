@@ -10,13 +10,13 @@ namespace DefaultNamespace
         private SelectionManager manager;
         private UnitController controller;
 
-        public void Init()
+        public override void OnStartAuthority()
         {
             manager = transform.root.GetComponent<SelectionManager>();
 
             controller = GetComponent<UnitController>();
 
-            if (transform.root.GetComponent<NetworkIdentity>().isLocalPlayer)
+            if (hasAuthority)
             {
                 manager.OnSelectionEnd += OnSelectionEnd;
             }
