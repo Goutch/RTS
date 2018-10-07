@@ -1,16 +1,17 @@
-﻿using System;
+﻿
 using System.Collections.Generic;
+using DefaultNamespace;
 using DefaultNamespace.Abilities;
-using UnityEngine;
-using UnityEngine.Assertions.Must;
 
-namespace DefaultNamespace
-{
+using UnityEngine;
+
+
     [CreateAssetMenu(fileName = "Info", menuName = "Info/Unit")]
     public class UnitData : ScriptableObject
     {
         [SerializeField] private Sprite sprite;
         [SerializeField] private UnitAI unitAI;
+        [SerializeField] private RuntimeAnimatorController animatorController;
         [SerializeField] private Color color;
         [SerializeField] private string name;
         [Header("Stats")]
@@ -33,7 +34,8 @@ namespace DefaultNamespace
 
         public UnitAI AI=> unitAI;
 
-
+        public RuntimeAnimatorController AnimsController=>animatorController;
+   
         public Stat health;
         public Stat armor;
         public Stat speed;
@@ -56,4 +58,3 @@ namespace DefaultNamespace
             abilities.Insert(0,basicAttack);
         }
     }
-}

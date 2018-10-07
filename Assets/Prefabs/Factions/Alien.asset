@@ -11,10 +11,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 511559505a3847edb4e9cc974a1e7e6e, type: 3}
   m_Name: Alien
   m_EditorClassIdentifier: 
-  sprite: {fileID: 21300000, guid: 904ef95cb7e50df4ea69614454146090, type: 3}
+  sprite: {fileID: 21300010, guid: 3ba042bb5cb34ff41aec25b92614c508, type: 3}
   unitAI: {fileID: 11400000, guid: 5ccee1d5673c7de40ad1146c9ed5daf6, type: 2}
+  animatorController: {fileID: 9100000, guid: 8459d0b479ad70f43bbc46cb2a829093, type: 2}
   color: {r: 1, g: 1, b: 1, a: 1}
-  name: aliening
+  name: Zorgling
   baseHealth: 1
   baseArmor: 1
   baseSpeed: 1.5

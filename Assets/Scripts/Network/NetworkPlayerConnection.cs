@@ -1,15 +1,18 @@
 ﻿using System.Collections;
+using System.ComponentModel;
 using DefaultNamespace;
 using Game;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering;
 using UnityEngine.Networking;
+using UnityEngine.Networking.Types;
 
 
 public class NetworkPlayerConnection : NetworkBehaviour
 {
     [SerializeField] private GameObject lobbyPlayerPrefab;
     [SerializeField] private GameObject GamePlayerPrefab;
-
+    
 
     [SyncVar(hook = nameof(OnMyName))] private string playerName = "";
     [SyncVar(hook = nameof(OnMyFaction))] private int factionIndex = 0;
@@ -22,8 +25,11 @@ public class NetworkPlayerConnection : NetworkBehaviour
     public int TeamId => teamID;
 
     private RTSNetworkManager _networkManager;
+    private GameEventChannel _gameEventChannel;
+    private GameLoader _gameLoader;
     private LobbyPlayerManager lobbyPlayer;
     private PlayerManager gamePlayer;
+    private Spawner spawner;
 
     public override void OnStartClient()
     {
@@ -33,6 +39,9 @@ public class NetworkPlayerConnection : NetworkBehaviour
         _networkManager.RegisterPlayer(this);
         _networkManager.OnNetworkStateChange += HandleNetworkStateChange;
         _networkManager.GetComponent<LobbyEventChannel>().OnLobbyPlayerSpawned += SetReferenceToLobbyPlayer;
+        _gameEventChannel = _networkManager.GetComponent<GameEventChannel>();
+        _gameLoader = _networkManager.GetComponent<GameLoader>();
+        spawner = GetComponent<Spawner>();
         Debug.Log("Client Network Player start");
     }
 
@@ -72,7 +81,7 @@ public class NetworkPlayerConnection : NetworkBehaviour
             case RTSNetworkManager.NetworkState.LoadingGame: //ChangeScene & spawn PlayerObject set reference
                 OnLoadingGame();
                 break;
-            case RTSNetworkManager.NetworkState.InGame: //spawn units
+            case RTSNetworkManager.NetworkState.InGame: //spawned units and start playing
                 OnEnterGame();
                 break;
             case RTSNetworkManager.NetworkState.EndGameLobby:
@@ -93,6 +102,7 @@ public class NetworkPlayerConnection : NetworkBehaviour
                 OnInitializingPlayers();
                 break;
             case GameLoader.GameLoadingState.LoadFinish:
+                OnLoadFinished();
                 break;
         }
     }
@@ -104,7 +114,6 @@ public class NetworkPlayerConnection : NetworkBehaviour
         {
             lobbyPlayer = ClientScene.FindLocalObject(lobbyPlayerNetID)?.GetComponent<LobbyPlayerManager>();
         }
-
         lobbyPlayer.OnNameChanged += AskServerToChangeName;
         lobbyPlayer.OnFactionChanged += AskServerToChangeFaction;
         lobbyPlayer.OnTeamChanged += AskServerToChangeTeamID;
@@ -132,8 +141,8 @@ public class NetworkPlayerConnection : NetworkBehaviour
     {
         Debug.Log(playerName + ":Changed Faction to " + _networkManager.PlayableFactions[newIndex].Name);
         factionIndex = newIndex;
-        this.GetComponent<Spawner>().ChangeFaction(FactionIndex);
-
+        spawner.ChangeFaction(FactionIndex);
+        
         if (lobbyPlayer != null)
         {
             lobbyPlayer.SetFactionIndex(newIndex);
@@ -168,8 +177,11 @@ public class NetworkPlayerConnection : NetworkBehaviour
 
     public void OnEnterGameScene()
     {
-        GameObject.FindGameObjectWithTag("GameController").GetComponent<GameLoader>().OnGameLoadingStateChange +=
+        _networkManager.GetComponent<GameLoader>().OnGameLoadingStateChange +=
             HandleLoadingGameStateChange;
+        Debug.Log("OnEnterGameScene");
+        if (hasAuthority)
+            CmdClientFinishedLoadingScene();
     }
 
     #region GameLoading
@@ -189,13 +201,20 @@ public class NetworkPlayerConnection : NetworkBehaviour
             gamePlayer = ClientScene.FindLocalObject(GamePlayerNetID)?.GetComponent<PlayerManager>();
         }
 
-        GetComponent<Spawner>().SetGamePlayer(gamePlayer.transform);
+        Debug.Log("Reference set for " + playerName);
+        spawner.SetGamePlayer(gamePlayer.transform);
     }
 
     private void OnInitializingPlayers()
     {
-        Debug.Log("OnInitializeGame");
+        
         gamePlayer.Init(this.netId);
+    }
+
+    private void OnLoadFinished()
+    {
+        if (hasAuthority)
+            CmdClientFinishedLoadingGame();
     }
 
     #endregion
@@ -206,7 +225,7 @@ public class NetworkPlayerConnection : NetworkBehaviour
         Debug.Log("OnEnterGame");
         if (hasAuthority)
         {
-            GetComponent<Spawner>().SpawnStartingUnits();
+            spawner.SpawnStartingUnits();
         }
     }
 
@@ -247,6 +266,7 @@ public class NetworkPlayerConnection : NetworkBehaviour
 
     #endregion
 
+
     [Command]
     private void CmdSpawnLobbyPlayer()
     {
@@ -256,23 +276,95 @@ public class NetworkPlayerConnection : NetworkBehaviour
     }
 
     [Command]
+    private void CmdClientFinishedLoadingScene()
+    {
+        OnAllClientsFinishedLoadingScene();
+    }
+
+    [Server]
+    private void OnAllClientsFinishedLoadingScene()
+    {
+        _gameEventChannel.OnALlPlayerSceneLoaded += CmdClientsLoadedScene;
+        _gameEventChannel.NotifyPlayerSceneLoaded();
+    }
+
+    [Command]
+    private void CmdClientsLoadedScene()
+    {
+        RpcClientsLoadedScene();
+    }
+
+    [ClientRpc]
+    private void RpcClientsLoadedScene()
+    {
+        Debug.Log("OnClientsScenesLoadedRPC");
+        _gameLoader.OnClientLoadedScene();
+    }
+
+    [Command]
     private void CmdSpawnGamePlayer()
     {
-        if (!connectionToClient.isReady) ;
-        NetworkServer.SetClientReady(connectionToClient);
+        if (!connectionToClient.isReady)
+            NetworkServer.SetClientReady(connectionToClient);
         if (connectionToClient.isReady)
         {
             GameObject gamePlayerObject = Instantiate(GamePlayerPrefab, Vector3.one, Quaternion.identity);
             gamePlayer = gamePlayerObject.GetComponent<PlayerManager>();
             NetworkServer.SpawnWithClientAuthority(gamePlayerObject, connectionToClient);
-            RpcSetReferenceGamePlayerObject(gamePlayerObject.GetComponent<NetworkIdentity>().netId);
+            RpcSetReferenceGamePlayerObject(gamePlayer.GetComponent<NetworkIdentity>().netId);
+            CmdSetGamePlayerReference();
         }
+    }
+
+    [Command]
+    private void CmdSetGamePlayerReference()
+    {
+        RpcSetReferenceGamePlayerObject(gamePlayer.GetComponent<NetworkIdentity>().netId);
     }
 
     [ClientRpc]
     private void RpcSetReferenceGamePlayerObject(NetworkInstanceId instanceId)
     {
         SetReferenceToGamePlayer(instanceId);
-        _networkManager.GetComponent<GameEventChannel>().NotifyPlayerReferenceSet();
+        _gameEventChannel.OnPlayerReferenceSet += CmdAllClientsPlayerReferenceSet;
+        CmdOnReferenceSetForClient();
+    }
+
+    [Command]
+    private void CmdOnReferenceSetForClient()
+    {
+        _gameEventChannel.NotifyPlayerReferenceSet();
+    }
+
+    [Command]
+    private void CmdAllClientsPlayerReferenceSet()
+    {
+        RpcAllClientsPlayersReferenceSet();
+    }
+
+    [ClientRpc]
+    private void RpcAllClientsPlayersReferenceSet()
+    {
+        _gameLoader.OnPlayerReferenceSet();
+    }
+
+    [Command]
+    private void CmdClientFinishedLoadingGame()
+    {
+        _gameEventChannel.OnAllPlayerGameLoaded += CmdAllClientsGameIsLoaded;
+        _gameEventChannel.NotifyPlayerGameLoaded();
+    }
+
+    [Command]
+    private void CmdAllClientsGameIsLoaded()
+    {
+        RpcAlllClientsGameIsLoaded();
+    }
+
+    [ClientRpc]
+    private void RpcAlllClientsGameIsLoaded()
+    {
+        Debug.Log(PlayerName + " finished loading Game");
+        _gameLoader.OnLoadFinish();
     }
 }

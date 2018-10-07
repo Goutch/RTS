@@ -12,15 +12,18 @@ namespace DefaultNamespace
         [SerializeField] private Command.CommandType[] executableCommands;
         private Mover mover;
         private Sight sight;
+        private Animator animator;
         private UnitData _data;
         private List<Vector3> path;
         private Command command;
         private Queue<Command> commandsQueue;
 
-        public void Init(Mover mover, Sight sight, UnitData data)
+
+        public void Init(Mover mover, Sight sight, Animator animator, UnitData data)
         {
             this.mover = mover;
             this.sight = sight;
+            this.animator = animator;
             this._data = data;
             path = new List<Vector3>();
             commandsQueue = new Queue<Command>();
@@ -40,10 +43,10 @@ namespace DefaultNamespace
                 switch (command.type)
                 {
                     case Command.CommandType.Move:
-                        Move(command.Target,0.2f);
+                        Move(command.Target, 0.2f);
                         break;
                     case Command.CommandType.Attack:
-                        
+
                         break;
                 }
             }
@@ -52,11 +55,13 @@ namespace DefaultNamespace
                 idle();
             }
         }
-        //what the unit do when it doesent have any vommands
+
+        //what the unit do when it doesent have any commands
         protected virtual void idle()
         {
             
         }
+
         //set Command
         public bool Execute(Command command)
         {
@@ -79,15 +84,17 @@ namespace DefaultNamespace
                 commandsQueue.Enqueue(command);
                 return true;
             }
+
             return false;
         }
 
         private void OnCommandExecuted()
         {
             command = null;
+            animator.SetTrigger("Idle");
         }
 
-        private void Move(Vector2 target,float precision)
+        private void Move(Vector2 target, float precision)
         {
             if (path == null || !path.Any())
             {
@@ -98,33 +105,33 @@ namespace DefaultNamespace
                     command = null;
                     return;
                 }
+                animator.SetTrigger("Walk");
             }
 
             if (path.Any() && Vector2.Distance(mover.transform.position, path.First()) < precision)
             {
                 path.RemoveAt(0);
+                //reached destination
+                if (!path.Any())
+                {                 
+                    OnCommandExecuted();
+                    return;
+                }
             }
 
-            //reached destination
-            if (!path.Any())
-            {
-                OnCommandExecuted();
-                return;
-            }
 
             mover.MoveAndRotateToward(path.First(), _data.speed.Value);
         }
 
         private void Attack(Transform targeTransform)
         {
-            if(targeTransform==null)
+            if (targeTransform == null)
                 OnCommandExecuted();
             if (Vector2.Distance(mover.transform.position, targeTransform.position) <= _data.attackRange.Value)
             {
-                
             }
-            else 
-                Move(targeTransform.position,0.2f);
+            else
+                Move(targeTransform.position, 0.2f);
         }
     }
 }

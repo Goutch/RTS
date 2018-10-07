@@ -1,5 +1,4 @@
-﻿
-using DefaultNamespace;
+﻿using DefaultNamespace;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -18,19 +17,29 @@ public class Spawner : NetworkBehaviour
         set { _factionData = Instantiate(value); }
     }
 
-    [SyncVar(hook = "OnFactionIndexChange")]
     public int factionIndex = 0;
+
+    public int FactionIndex
+    {
+        get { return factionIndex; }
+        set
+        {
+            factionIndex = value;
+            FactionData = _networkManager.PlayableFactions[factionIndex];
+        }
+    }
 
     private PlayerManager manager;
 
-    private void Awake()
+    public override void OnStartClient()
     {
         _networkManager = NetworkManager.singleton.GetComponent<RTSNetworkManager>();
+        _playerConnection = GetComponent<NetworkPlayerConnection>();
+        ChangeFaction(GetComponent<NetworkPlayerConnection>().FactionIndex);
     }
 
     public void SpawnStartingUnits()
     {
-        _playerConnection = GetComponent<NetworkPlayerConnection>();
         FactionData = _networkManager.PlayableFactions[factionIndex];
         for (int i = 0; i < _factionData.StartUnits.Length; i++)
         {
@@ -44,16 +53,10 @@ public class Spawner : NetworkBehaviour
         CmdSpawnUnit(_factionData.SpawnableUnits.IndexOf(data), pos);
     }
 
-    //SynchVar Callback
-    private void OnFactionIndexChange(int index)
-    {
-        factionIndex = index;
-        FactionData = _networkManager.PlayableFactions[factionIndex];
-    }
 
     public void ChangeFaction(int index)
     {
-        factionIndex = index;
+        FactionIndex = index;
     }
 
     public void SetGamePlayer(Transform _gamePlayerTransform)
@@ -61,25 +64,26 @@ public class Spawner : NetworkBehaviour
         gamePlayerObjectTransform = _gamePlayerTransform;
     }
 
+
     [Command]
-    public void CmdSpawnUnit(int spawnInfoIndex, Vector2 pos)
+    public void CmdSpawnUnit(int spawnDataIndex, Vector2 pos)
     {
         GameObject unit = Instantiate(unitContainerPrefab, pos, Quaternion.identity, gamePlayerObjectTransform);
         NetworkServer.SpawnWithClientAuthority(unit, connectionToClient);
         unit.GetComponent<UnitController>()
-            .Init(_factionData.SpawnableUnits[spawnInfoIndex], _playerConnection.TeamId, gamePlayerObjectTransform);
+            .Init(_factionData.SpawnableUnits[spawnDataIndex], _playerConnection.TeamId, gamePlayerObjectTransform);
         NetworkInstanceId netID = unit.GetComponent<NetworkIdentity>().netId;
-        RpcInitUnit(netID, spawnInfoIndex, _playerConnection.TeamId);
+        RpcInitUnit(netID, spawnDataIndex, _playerConnection.TeamId);
     }
 
     [ClientRpc]
-    public void RpcInitUnit(NetworkInstanceId id, int spawnInfoIndex, int teamID)
+    public void RpcInitUnit(NetworkInstanceId id, int spawnDataIndex, int teamID)
     {
         if (!isServer)
         {
             GameObject go = ClientScene.FindLocalObject(id);
             go.GetComponent<UnitController>()
-                .Init(_factionData.SpawnableUnits[spawnInfoIndex], teamID, gamePlayerObjectTransform);
+                .Init(_factionData.SpawnableUnits[spawnDataIndex], teamID, gamePlayerObjectTransform);
         }
     }
 }

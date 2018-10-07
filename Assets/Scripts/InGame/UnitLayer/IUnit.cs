@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿
+using DefaultNamespace;
 using UnityEngine;
 
-namespace DefaultNamespace
-{
+
     public interface IUnit
     {
         bool OverrideCommand(Command command);
@@ -12,4 +12,3 @@ namespace DefaultNamespace
         int GetNumber();
         bool Contains(IUnit unit);
     }
-}

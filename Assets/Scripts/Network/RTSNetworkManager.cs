@@ -48,7 +48,6 @@ public class RTSNetworkManager : NetworkManager
 
     private void Start()
     {
-        
         CurrentNetworkState = NetworkState.Disconected;
     }
 
@@ -111,14 +110,13 @@ public class RTSNetworkManager : NetworkManager
     public override void OnClientSceneChanged(NetworkConnection conn)
     {
         base.OnClientSceneChanged(conn);
+        this.GetComponent<GameLoader>().OnSceneChanged();
         if (_currentNetworkState == NetworkState.LoadingGame)
         {
             foreach (var player in connectedPlayers)
             {
                 player.OnEnterGameScene();
             }
-
-            GameObject.FindGameObjectWithTag("GameController").GetComponent<GameLoader>().OnSceneChanged();
         }
     }
 

@@ -84,8 +84,7 @@ using UnityEngine.UI;
             factionDropDown.interactable = false;
             teamIdInputField.interactable = false;
             lockNReadyButton.interactable = false;
-            isReady = true;
-
+            CmdSetClientReady();
         }
 
         public void SetPlayerName(String name)
@@ -128,4 +127,11 @@ using UnityEngine.UI;
                 OnTeamChanged(teamID);
             }
         }
+
+        [Command]
+        private void CmdSetClientReady()
+        {
+            isReady = true;
+        }
+
     }

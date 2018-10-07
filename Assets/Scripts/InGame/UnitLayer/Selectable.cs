@@ -1,51 +1,57 @@
-﻿using System.ComponentModel.Design.Serialization;
+﻿using DefaultNamespace;
 using UnityEngine;
-using UnityEngine.Experimental.PlayerLoop;
 using UnityEngine.Networking;
 
-namespace DefaultNamespace
+
+public class Selectable : NetworkBehaviour
 {
-    public class Selectable : NetworkBehaviour
+    private SelectionManager manager;
+    private UnitController controller;
+
+
+
+    public void Init()
     {
-        private SelectionManager manager;
-        private UnitController controller;
-
-        public override void OnStartAuthority()
+        manager = transform.root.GetComponent<SelectionManager>();
+        manager.OnSelectionEnd += OnSelectionEnd;
+        controller = GetComponent<UnitController>();
+        if (hasAuthority)
         {
-            manager = transform.root.GetComponent<SelectionManager>();
-
-            controller = GetComponent<UnitController>();
-
-            if (hasAuthority)
-            {
-                manager.OnSelectionEnd += OnSelectionEnd;
-            }
+            manager.OnSelectionEnd += OnSelectionEnd;
         }
+    }
 
-        private void OnSelectionEnd(Rect bounds, Camera cam)
+    private void OnDisable()
+    {
+        if (hasAuthority)
         {
-            Vector3 screenPos = cam.WorldToScreenPoint(transform.position);
-            screenPos.y = Screen.height - screenPos.y;
-            if (bounds.Contains(screenPos) && !manager.SelectedUnits.Composants.Contains(controller))
-            {
-                manager.SelectedUnits.Add(controller);
-                CmdOnAddSelection();
-            }
+            //manager.OnSelectionEnd -= OnSelectionEnd;
         }
+    }
 
-        [Command]
-        private void CmdOnAddSelection()
+    private void OnSelectionEnd(Rect bounds, Camera cam)
+    {
+        Vector3 screenPos = cam.WorldToScreenPoint(transform.position);
+        screenPos.y = Screen.height - screenPos.y;
+        if (bounds.Contains(screenPos) && !manager.SelectedUnits.Composants.Contains(controller))
         {
-            if (!hasAuthority)
-                manager.SelectedUnits.Add(controller);
-            RpcOnAddSelection();
+            manager.SelectedUnits.Add(controller);
+            CmdOnAddSelection();
         }
+    }
 
-        [ClientRpc]
-        private void RpcOnAddSelection()
-        {
-            if (!hasAuthority)
-                manager.SelectedUnits.Add(controller);
-        }
+    [Command]
+    private void CmdOnAddSelection()
+    {
+        if (!hasAuthority)
+            manager.SelectedUnits.Add(controller);
+        RpcOnAddSelection();
+    }
+
+    [ClientRpc]
+    private void RpcOnAddSelection()
+    {
+        if (!hasAuthority)
+            manager.SelectedUnits.Add(controller);
     }
 }

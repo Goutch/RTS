@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
+using DefaultNamespace;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.Experimental.PlayerLoop;
 using UnityEngine.Networking;
 
-namespace DefaultNamespace
-{
+
     public class UnitController : NetworkBehaviour, IUnit
     {
         private UnitData _data;
@@ -21,8 +17,8 @@ namespace DefaultNamespace
         private Mover mover;
         private Sight sight;
         private SpriteRenderer visual;
-
-        private List<bool> AbilitesAvalable;
+        private Animator animator;
+        private List<bool> AbilitiesAvalable;
 
 
         public void Init(UnitData dataPrefab, int teamID, Transform parent)
@@ -31,18 +27,18 @@ namespace DefaultNamespace
             this.teamID = teamID;
             this._data = Instantiate(dataPrefab);
             this._data.Init();
-            AbilitesAvalable = new List<bool>();
+            AbilitiesAvalable = new List<bool>();
             mover = GetComponent<Mover>();
             sight = GetComponentInChildren<Sight>();
             visual = GetComponentInChildren<SpriteRenderer>();
-
+            animator = visual.GetComponent<Animator>();
             AI = Instantiate(_data.AI);
-            AI.Init(mover, sight, _data);
-
+            AI.Init(mover, sight,animator, _data);
+            animator.runtimeAnimatorController = _data.AnimsController;
             selectedCircle.transform.localScale = (_data.size.Value / 32) * .5f * Vector2.one;
 
             this.name = _data.Name;
-
+            this.GetComponent<Selectable>().Init();
             this.GetComponent<Rigidbody2D>().mass = _data.mass.Value;
             this.GetComponentInChildren<SpriteRenderer>().sprite = _data.Sprite;
             this.GetComponent<CircleCollider2D>().radius = _data.size.Value / 200;
@@ -91,7 +87,7 @@ namespace DefaultNamespace
         public void CastAbility(int Index)
         {
             if (hasAuthority)
-                if (AbilitesAvalable[Index])
+                if (AbilitiesAvalable[Index])
                 {
                     StartCoroutine("StartAbilityRoutine",Index);
                     CmdCastAbility(Index);
@@ -100,19 +96,19 @@ namespace DefaultNamespace
 
         private IEnumerable StartAbilityRoutine(int Index)
         {
-            AbilitesAvalable[Index] = false;
+            AbilitiesAvalable[Index] = false;
             //start animation
             //todo: network.spawn projectile or serveronly callback on projevtiles so it only get called on server
             yield return new WaitForSeconds(_data.Abilities[Index].Cooldown);
 
-            AbilitesAvalable[Index] = true;
+            AbilitiesAvalable[Index] = true;
         }
 
         [Command]
         private void CmdCastAbility(int index)
         {
             if (!isLocalPlayer)
-                if (AbilitesAvalable[index])
+                if (AbilitiesAvalable[index])
                 {
                     StartCoroutine("StartAbilityRoutine", index);
                     RpcCastAbility(index);
@@ -125,4 +121,3 @@ namespace DefaultNamespace
             StartCoroutine("StartAbilityRoutine", index);
         }
     }
-}

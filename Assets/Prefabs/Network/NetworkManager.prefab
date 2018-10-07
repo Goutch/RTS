@@ -128,4 +128,4 @@ MonoBehaviour:
   playableFactions:
   - {fileID: 11400000, guid: 06e1a519ec53f1643a11aa38c2062827, type: 2}
   - {fileID: 11400000, guid: d650b46302965a540b16ee97fc985ff9, type: 2}
-  PlayScene: {fileID: 0}
+  playSceneName: 

@@ -103,7 +103,7 @@ namespace DefaultNamespace
         [Command]
         private void CmdSendBasicCommand(Vector2 pos, string type, bool isSingle)
         {
-            if (!isLocalPlayer)
+            if (!hasAuthority)
             {
                 Command.CommandType commandType;
                 Command.CommandType.TryParse(type, true, out commandType);
@@ -116,7 +116,7 @@ namespace DefaultNamespace
         [ClientRpc]
         private void RpcSendBasicCommand(Vector2 pos, string type, bool isSingle)
         {
-            if (!isLocalPlayer)
+            if (!hasAuthority)
             {
                 Command.CommandType commandType;
                 Command.CommandType.TryParse(type, true, out commandType);

@@ -4,11 +4,15 @@ using UnityEngine.Networking;
 
 public delegate void GameLoaderEventHandler(GameLoader.GameLoadingState state);
 
-public class GameLoader : NetworkBehaviour
+
+public class GameLoader : MonoBehaviour
 {
     public event GameLoaderEventHandler OnGameLoadingStateChange;
-    private int numberClientLoaded = 0;
+    private static int numberClientLoaded = 0;
+
+
     private GameEventChannel _gameEventChannel;
+    private RTSNetworkManager _networkManager;
 
     private void Awake()
     {
@@ -45,58 +49,57 @@ public class GameLoader : NetworkBehaviour
     public void OnSceneChanged()
     {
         _gameEventChannel = NetworkManager.singleton.GetComponent<GameEventChannel>();
-        _gameEventChannel.OnPlayersObjectSpawned += OnPlayersSpawned;
-        CurrentGameLoadingState = GameLoadingState.SpawnPlayersObjects;
+        _networkManager = NetworkManager.singleton.GetComponent<RTSNetworkManager>();
     }
 
-    private void OnPlayersSpawned()
+    public void OnClientLoadedScene()
+    {
+        numberClientLoaded++;
+        if (numberClientLoaded == _networkManager.ConnectedPlayers.Count)
+        {
+            _gameEventChannel.OnPlayersObjectSpawned += OnPlayersSpawned;
+            CurrentGameLoadingState = GameLoadingState.SpawnPlayersObjects;
+            numberClientLoaded = 0;
+        }
+    }
+
+    public void OnPlayersSpawned()
     {
         spawnedPlayersCount++;
-        if (spawnedPlayersCount == NetworkServer.connections.Count)
+        if (spawnedPlayersCount == _networkManager.ConnectedPlayers.Count)
         {
             _gameEventChannel.OnPlayersObjectSpawned -= OnPlayersSpawned;
-            _gameEventChannel.OnPlayerReferenceSet += OnPlayerReferenceSet;
             CurrentGameLoadingState = GameLoadingState.SettingPlayersObjectsReferences;
         }
     }
 
-    private void OnPlayerReferenceSet()
+    public void OnPlayerReferenceSet()
     {
         playersRefereneSetCount++;
-        if (playersRefereneSetCount == NetworkServer.connections.Count)
+        if (playersRefereneSetCount == _networkManager.ConnectedPlayers.Count)
         {
             _gameEventChannel.OnPlayerReferenceSet -= OnPlayerReferenceSet;
-            _gameEventChannel.OnPlayerInitialized += OnPlayerInitialized;
             CurrentGameLoadingState = GameLoadingState.InitPlayersObjects;
         }
     }
 
 
-    private void OnPlayerInitialized()
+   public void OnPlayerInitialized()
     {
         initializedPlayersCount++;
-        if (initializedPlayersCount == NetworkServer.connections.Count)
+        if (initializedPlayersCount == _networkManager.ConnectedPlayers.Count)
         {
-            _gameEventChannel.OnPlayerInitialized -= OnPlayerInitialized;
-            CmdClientFinishedLoadingGame();
+            CurrentGameLoadingState = GameLoadingState.LoadFinish;
         }
     }
 
-    [Command]
-    private void CmdClientFinishedLoadingGame()
+    public void OnLoadFinish()
     {
         numberClientLoaded++;
-        if (numberClientLoaded == NetworkServer.connections.Count)
+        if (numberClientLoaded == _networkManager.ConnectedPlayers.Count)
         {
-            RpcStartGame();
+            GetComponent<RTSNetworkManager>().OnLoadingFinish();
         }
     }
-
-    [ClientRpc]
-    private void RpcStartGame()
-    {
-        currentGameLoadingState = GameLoadingState.NotLoading;
-
-        NetworkManager.singleton.GetComponent<RTSNetworkManager>().OnLoadingFinish();
-    }
+    
 }
