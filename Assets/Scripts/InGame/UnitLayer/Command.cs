@@ -8,6 +8,8 @@ namespace DefaultNamespace
         {
             Move,
             Attack,
+            ComplexeCast,
+            BasicCast
         }
 
         public CommandType type;

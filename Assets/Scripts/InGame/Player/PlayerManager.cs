@@ -5,6 +5,9 @@ using UnityEngine.Networking;
 public class PlayerManager : NetworkBehaviour
 {
     private int teamID = 0;
+
+    public int TeamId1 => teamID;
+
     private string playerName = "";
     private NetworkPlayerConnection myNetworkPlayer;
     private RTSNetworkManager _networkManager;

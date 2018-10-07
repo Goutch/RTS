@@ -46,6 +46,9 @@ namespace DefaultNamespace
         public void BeginSelection(Vector2 position)
         {
             beiginPosition = position;
+            if (hasAuthority)
+            {
+            }
         }
 
         public void EndSelection(bool addToExistingSelection)
@@ -57,8 +60,10 @@ namespace DefaultNamespace
                     u.SetSelected(false);
                 }
 
+
                 if (!addToExistingSelection)
                 {
+                    CmdClearSelection();
                     selectedUnits.Composants.Clear();
                 }
 
@@ -128,9 +133,28 @@ namespace DefaultNamespace
         }
 
         [Command]
+        private void CmdClearSelection()
+        {
+            RpcClearSelection();
+        }
+
+        [ClientRpc]
+        private void RpcClearSelection()
+        {
+            if (!hasAuthority)
+            {
+                selectedUnits.Composants.Clear();
+                foreach (IUnit u in selectedUnits.Composants)
+                {
+                    u.SetSelected(false);
+                }
+            }
+        }
+
+        [Command]
         private void CmdSelectSavedSelection(int index)
         {
-            if (!isLocalPlayer)
+            if (!hasAuthority)
                 if (savedSelections.IsGroupSaved(index))
                 {
                     selectedUnits = savedSelections.GetSelection(index);
@@ -140,7 +164,7 @@ namespace DefaultNamespace
         [ClientRpc]
         private void RpcSelectSavedSelection(int index)
         {
-            if (!isLocalPlayer)
+            if (!hasAuthority)
                 if (savedSelections.IsGroupSaved(index))
                 {
                     selectedUnits = savedSelections.GetSelection(index);
@@ -150,7 +174,7 @@ namespace DefaultNamespace
         [Command]
         private void CmdSaveCurrentSelection(int index)
         {
-            if (!isLocalPlayer)
+            if (!hasAuthority)
                 if (selectedUnits.Composants.Any())
                 {
                     savedSelections.SaveSelection(selectedUnits, index);
@@ -161,7 +185,7 @@ namespace DefaultNamespace
         [ClientRpc]
         private void RpcSaveCurrentSelection(int index)
         {
-            if (!isLocalPlayer)
+            if (!hasAuthority)
                 if (selectedUnits.Composants.Any())
                     savedSelections.SaveSelection(selectedUnits, index);
         }

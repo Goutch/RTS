@@ -7,7 +7,7 @@ namespace DefaultNamespace
     {
         private CircleCollider2D sightTrigger;
         private List<Transform> enemyUnitsInSight;
-
+        private UnitController myController;
         public List<Transform> EnemyUnitsInSight
         {
             get
@@ -32,6 +32,7 @@ namespace DefaultNamespace
         {
             allyUnitsInSight = new List<Transform>();
             enemyUnitsInSight = new List<Transform>();
+            myController=GetComponentInParent<UnitController>();
         }
 
         private void OnTriggerEnter2D(Collider2D other)
@@ -39,7 +40,7 @@ namespace DefaultNamespace
 
             if (other.tag == "Unit")
             {
-                if (other.GetComponent<UnitController>().TeamId == this.GetComponent<UnitController>().TeamId)
+                if (other.GetComponent<UnitController>().TeamId == myController.TeamId)
                 {
                     allyUnitsInSight.Add(other.transform);
                 }

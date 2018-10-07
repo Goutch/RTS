@@ -1,16 +1,16 @@
 fileFormatVersion: 2
-guid: 3ba042bb5cb34ff41aec25b92614c508
+guid: 29f0fa1d6b0fce94987128289a8dea59
 TextureImporter:
   fileIDToRecycleName:
-    21300000: Zorgling_0
-    21300002: Zorgling_1
-    21300004: Zorgling_2
-    21300006: Zorgling_3
-    21300008: Zorgling_4
-    21300010: Zorgling_5
-    21300012: Zorgling_6
-    21300014: Zorgling_7
-    21300016: Zorgling_8
+    21300000: Soldier_0
+    21300002: Soldier_1
+    21300004: Soldier_2
+    21300006: Soldier_3
+    21300008: Soldier_4
+    21300010: Soldier_5
+    21300012: Soldier_6
+    21300014: Soldier_7
+    21300016: Soldier_8
   externalObjects: {}
   serializedVersion: 7
   mipmaps:
@@ -93,7 +93,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Zorgling_0
+      name: Soldier_0
       rect:
         serializedVersion: 2
         x: 0
@@ -107,13 +107,13 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 605dbcf08f676564ab8676578479779b
+      spriteID: fcb05bff672b83d4d87f1d2d5229c0e6
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Zorgling_1
+      name: Soldier_1
       rect:
         serializedVersion: 2
         x: 32
@@ -127,13 +127,13 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4a7a0ae75d91d444786eed92e484beb8
+      spriteID: f8847079adbe0e94b85a7fa102f375a0
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Zorgling_2
+      name: Soldier_2
       rect:
         serializedVersion: 2
         x: 64
@@ -147,13 +147,13 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 40126b2400dffe34dbb2b453aa10e8bd
+      spriteID: 5ce22aacd09fae843ac0eed306fb3d18
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Zorgling_3
+      name: Soldier_3
       rect:
         serializedVersion: 2
         x: 96
@@ -167,13 +167,13 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d8ea7b050a3a5254e807315e3b857af2
+      spriteID: 2e22eb189eb508f4ea3b854d59b90fa3
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Zorgling_4
+      name: Soldier_4
       rect:
         serializedVersion: 2
         x: 0
@@ -187,13 +187,13 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 229bf073336149e4fa3a8058ec15a52b
+      spriteID: 1a4cf25038cf2404792b9faea44ef2f6
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Zorgling_5
+      name: Soldier_5
       rect:
         serializedVersion: 2
         x: 32
@@ -207,13 +207,13 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 52f2783ee3a41164680ad95480307419
+      spriteID: 1a64884d009ae5e4ebab0ca86762cd1c
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Zorgling_6
+      name: Soldier_6
       rect:
         serializedVersion: 2
         x: 64
@@ -227,13 +227,13 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9c17479ff64a59b4ebdda5824828eb17
+      spriteID: 279a1ede60b05174b9653174dd8e8d71
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Zorgling_7
+      name: Soldier_7
       rect:
         serializedVersion: 2
         x: 96
@@ -247,13 +247,13 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e174d8d9dac70c44084b6bd3ff768af2
+      spriteID: 0fd7ba3bad37f5e499f032d169beca7b
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Zorgling_8
+      name: Soldier_8
       rect:
         serializedVersion: 2
         x: 0
@@ -267,7 +267,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 442ffba4c091d77469a5687d37f2c7fa
+      spriteID: aef79b35db616c645af6ad51f562cf14
       vertices: []
       indices: 
       edges: []
@@ -275,7 +275,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: b36db2202dd93c444827936df093ff9f
+    spriteID: 3c45b844bbb05c04a956929b378cc909
     vertices: []
     indices: 
     edges: []

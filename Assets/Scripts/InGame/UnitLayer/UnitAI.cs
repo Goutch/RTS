@@ -17,10 +17,12 @@ namespace DefaultNamespace
         private List<Vector3> path;
         private Command command;
         private Queue<Command> commandsQueue;
-
+        private bool isMoving = false;
+        private UnitController myController;
 
         public void Init(Mover mover, Sight sight, Animator animator, UnitData data)
         {
+            myController = mover.GetComponent<UnitController>();
             this.mover = mover;
             this.sight = sight;
             this.animator = animator;
@@ -46,7 +48,7 @@ namespace DefaultNamespace
                         Move(command.Target, 0.2f);
                         break;
                     case Command.CommandType.Attack:
-
+                        Attack(command.TargetTransform);
                         break;
                 }
             }
@@ -59,7 +61,10 @@ namespace DefaultNamespace
         //what the unit do when it doesent have any commands
         protected virtual void idle()
         {
-            
+            //if (sight.EnemyUnitsInSight.Any())
+            //{
+            //    command=new Command(Command.CommandType.Attack,sight.EnemyUnitsInSight[0],true);
+            //}
         }
 
         //set Command
@@ -91,6 +96,7 @@ namespace DefaultNamespace
         private void OnCommandExecuted()
         {
             command = null;
+            animator.SetBool("isMoving", false);
             animator.SetTrigger("Idle");
         }
 
@@ -100,12 +106,15 @@ namespace DefaultNamespace
             {
                 path = Pathfinder.INSTANCE.FindPath(mover.transform.position, target);
                 //path was impossible
+
                 if (path == null)
                 {
                     command = null;
                     return;
                 }
-                animator.SetTrigger("Walk");
+
+                path.Add(target);
+                animator.SetBool("isMoving", true);
             }
 
             if (path.Any() && Vector2.Distance(mover.transform.position, path.First()) < precision)
@@ -113,7 +122,7 @@ namespace DefaultNamespace
                 path.RemoveAt(0);
                 //reached destination
                 if (!path.Any())
-                {                 
+                {
                     OnCommandExecuted();
                     return;
                 }
@@ -123,15 +132,27 @@ namespace DefaultNamespace
             mover.MoveAndRotateToward(path.First(), _data.speed.Value);
         }
 
-        private void Attack(Transform targeTransform)
+        private void Attack(Transform targetTransform)
         {
-            if (targeTransform == null)
-                OnCommandExecuted();
-            if (Vector2.Distance(mover.transform.position, targeTransform.position) <= _data.attackRange.Value)
+            if (targetTransform == null)
             {
+                OnCommandExecuted();
+                return;
+            }
+
+            if (Vector2.Distance(mover.transform.position, targetTransform.position) -
+                mover.GetComponent<CircleCollider2D>().radius -
+                targetTransform.GetComponent<CircleCollider2D>().radius <= _data.Abilities[0].Range)
+            {
+                if (_data.Abilities[0].IsTargetted)
+                    myController.CastComplexeAbility(0, targetTransform);
+                else
+                {
+                    myController.CastBasicAbility(0, targetTransform.position);
+                }
             }
             else
-                Move(targeTransform.position, 0.2f);
+                Move(targetTransform.position, 0.2f);
         }
     }
 }

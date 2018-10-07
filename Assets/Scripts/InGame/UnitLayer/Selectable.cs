@@ -43,8 +43,6 @@ public class Selectable : NetworkBehaviour
     [Command]
     private void CmdOnAddSelection()
     {
-        if (!hasAuthority)
-            manager.SelectedUnits.Add(controller);
         RpcOnAddSelection();
     }
 

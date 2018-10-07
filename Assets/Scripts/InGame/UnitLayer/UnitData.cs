@@ -18,11 +18,10 @@ using UnityEngine;
         [SerializeField] private float baseHealth;
         [SerializeField] private float baseArmor;
         [SerializeField] private float baseSpeed;
-        [SerializeField] private float baseDammage;
         [SerializeField] private float baseSizeInPixel;
         [SerializeField] private float baseSightRangeInPixel;
         [SerializeField] private float baseAttackRangeInPixel;
-        [SerializeField] private Ability basicAttack;
+        [Tooltip("The abilities the unit will be able to cast, note that the first one is the unit basic Attack")]
         [SerializeField] private List<Ability> abilities; 
         [SerializeField] private float baseMass;
 
@@ -50,11 +49,9 @@ using UnityEngine;
             health = new Stat(baseHealth);
             armor = new Stat(baseArmor);
             speed= new Stat(baseSpeed);
-            damage = new Stat(baseDammage);
             size= new Stat( baseSizeInPixel);
             sightRange= new Stat(baseSightRangeInPixel);
             attackRange= new Stat(baseAttackRangeInPixel);
             mass= new Stat(baseMass);
-            abilities.Insert(0,basicAttack);
         }
     }
