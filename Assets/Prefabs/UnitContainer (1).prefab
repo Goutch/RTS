@@ -71,10 +71,12 @@ GameObject:
   m_Component:
   - component: {fileID: 4503603867074980}
   - component: {fileID: 114796934642026466}
-  - component: {fileID: 50709877770589102}
   - component: {fileID: 114357768709242198}
   - component: {fileID: 114024303560565978}
   - component: {fileID: 114553259980809078}
+  - component: {fileID: 114931309852383854}
+  - component: {fileID: 114621651346630864}
+  - component: {fileID: 50709877770589102}
   - component: {fileID: 58877136840938966}
   - component: {fileID: 114046249425853954}
   - component: {fileID: 114518789786836472}
@@ -203,7 +205,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1232228107389882}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2.3022823, y: -2.0792859, z: 0}
+  m_LocalPosition: {x: -30.890093, y: 0.5570569, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4573356718530176}
@@ -314,7 +316,7 @@ Animator:
   m_GameObject: {fileID: 1114275632854958}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 72ffb73351c8c5447b454253e84b9116, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -508,6 +510,17 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114621651346630864
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1232228107389882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9293da015d2d4bd6aa05dacbc35452e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114796934642026466
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -541,6 +554,17 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
+--- !u!114 &114931309852383854
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1232228107389882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfbcd4cad4664f308c9cf39721986601, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114948656100523812
 MonoBehaviour:
   m_ObjectHideFlags: 1

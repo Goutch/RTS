@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Name: ZorglingAttack
   m_EditorClassIdentifier: 
   cooldown: 0.5
-  isTargetted: 1
-  rangeInTile: 0.1
   castLock: 1
+  rangeInTiles: 0.5
   damageValue: 5
+  rangeInTile: 0.1

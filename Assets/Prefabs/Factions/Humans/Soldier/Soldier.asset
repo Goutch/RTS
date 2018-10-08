@@ -13,13 +13,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sprite: {fileID: 21300000, guid: ac3db7ffd4c24c24da1880df5132cc9a, type: 3}
   unitAI: {fileID: 11400000, guid: 5ccee1d5673c7de40ad1146c9ed5daf6, type: 2}
-  animatorController: {fileID: 0}
+  animatorController: {fileID: 9100000, guid: 72ffb73351c8c5447b454253e84b9116, type: 2}
   color: {r: 1, g: 1, b: 1, a: 1}
   name: Soldier
   baseHealth: 10
   baseArmor: 0
   baseSpeed: 1
-  baseSizeInPixel: 20
+  baseSizeInPixel: 26
   baseSightRangeInPixel: 0
   baseAttackRangeInPixel: 0
   abilities: []

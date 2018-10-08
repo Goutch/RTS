@@ -4,14 +4,14 @@ namespace DefaultNamespace
 {
     public class AnimationEventHandler:MonoBehaviour
     {
-        private UnitController controller;
+        private AbilityCaster caster;
         private void Start()
         {
-            controller = GetComponentInParent<UnitController>();
+            caster = GetComponentInParent<AbilityCaster>();
         }
         public void OnCastFinish()
         {
-            controller.OnCastFinish();
+            caster.OnCastFinish();
         }
     }
 }
