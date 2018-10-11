@@ -16,10 +16,16 @@ namespace DefaultNamespace
         {
             health = data.health;
         }
-        [Server]
+
+        public override void OnNetworkDestroy()
+        {
+            OnDeath?.Invoke();
+        }
+
         public void Damage(float amount)
         {
-            CmdChangeHealth(health.Value - amount);
+            if (isServer)
+                CmdChangeHealth(health.Value - amount);
         }
 
         [ServerCallback]
@@ -54,15 +60,7 @@ namespace DefaultNamespace
         [Command]
         private void CmdKillUnit()
         {
-            RpcKillUnit();
-        }
-
-        [ClientRpc]
-        private void RpcKillUnit()
-        {
-            OnDeath?.Invoke();
-            if (hasAuthority)
-                NetworkServer.Destroy(this.gameObject);
+            NetworkServer.Destroy(this.gameObject);
         }
     }
 }

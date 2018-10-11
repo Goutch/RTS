@@ -1,5 +1,6 @@
 ﻿using UnityEditor;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Networking;
 
 namespace DefaultNamespace
@@ -27,67 +28,77 @@ namespace DefaultNamespace
 
             if (Input.GetKeyDown(KeyCode.Mouse1))
             {
-                RaycastHit2D hit =
-                    Physics2D.Raycast(
-                        new Vector2(Camera.main.ScreenToWorldPoint(Input.mousePosition).x,
-                            Camera.main.ScreenToWorldPoint(Input.mousePosition).y), Vector2.zero, 0f);
-                //hit the ground
-                if (!hit.collider)
+                //if didnt click on the ui
+                if (!EventSystem.current.IsPointerOverGameObject())
                 {
-                    if (Input.GetKey(addKey))
+                    RaycastHit2D hit =
+                        Physics2D.Raycast(
+                            new Vector2(Camera.main.ScreenToWorldPoint(Input.mousePosition).x,
+                                Camera.main.ScreenToWorldPoint(Input.mousePosition).y), Vector2.zero, 0f);
+                    //hit the ground
+                    if (!hit.collider)
                     {
-                        selectionManager.SelectedUnits.AddCommand(new Command(
-                            Command.CommandType.Move,
-                            Camera.main.ScreenToWorldPoint(Input.mousePosition),
-                            false));
+                        if (Input.GetKey(addKey))
+                        {
+                            selectionManager.SelectedUnits.AddCommand(new Command(
+                                Command.CommandType.Move,
+                                Camera.main.ScreenToWorldPoint(Input.mousePosition),
+                                false));
+                        }
+                        else
+                        {
+                            Command command = new Command(
+                                Command.CommandType.Move,
+                                Camera.main.ScreenToWorldPoint(Input.mousePosition),
+                                false);
+                            selectionManager.SelectedUnits.OverrideCommand(command);
+                            CmdSendBasicCommand(command.Target, (int) command.Type, command.IsSingle);
+                        }
                     }
-                    else
+                    //other unit
+                    else if (hit.collider.tag == "Unit")
                     {
-                        Command command = new Command(
-                            Command.CommandType.Move,
-                            Camera.main.ScreenToWorldPoint(Input.mousePosition),
-                            false);
-                        selectionManager.SelectedUnits.OverrideCommand(command);
-                        CmdSendBasicCommand(command.Target, (int)command.Type, command.IsSingle);
-                    }
-                }
-                //other unit
-                else if (hit.collider.tag == "Unit")
-                {
-                    //other team
-                    //if (hit.collider.GetComponent<UnitController>().TeamId != playerManager.TeamId)
-                    //{
+                        //other team
+                        //if (hit.collider.GetComponent<UnitController>().TeamId != playerManager.TeamId)
+                        //{
                         Command command = new Command(
                             Command.CommandType.Attack,
                             hit.transform,
                             false);
                         selectionManager.SelectedUnits.OverrideCommand(command);
-                        CmdSendComplexeCommmand(command.TargetTransform.GetComponent<NetworkIdentity>().netId, (int)command.type, command.IsSingle);
-                   // }
-                    //my team
-                    //else
-                    //{
-                        
-                    //}
+                        CmdSendComplexeCommmand(command.TargetTransform.GetComponent<NetworkIdentity>().netId,
+                            (int) command.type, command.IsSingle);
+                        // }
+                        //my team
+                        //else
+                        //{
+
+                        //}
+                    }
                 }
             }
 
             if (Input.GetMouseButtonDown(0))
             {
-                selectionManager.BeginSelection(Input.mousePosition);
+                if (!EventSystem.current.IsPointerOverGameObject())
+                    selectionManager.BeginSelection(Input.mousePosition);
             }
 
             if (Input.GetMouseButton(0))
             {
-                selectionManager.DrawSelectionSquare(Input.mousePosition);
+                if (!EventSystem.current.IsPointerOverGameObject())
+                    selectionManager.DrawSelectionSquare(Input.mousePosition);
             }
 
             if (Input.GetMouseButtonUp(0))
             {
-                if (Input.GetKey(addKey))
-                    selectionManager.EndSelection(true);
-                else
-                    selectionManager.EndSelection(false);
+                if (!EventSystem.current.IsPointerOverGameObject())
+                {
+                    if (Input.GetKey(addKey))
+                        selectionManager.EndSelection(true);
+                    else
+                        selectionManager.EndSelection(false);
+                }
             }
 
             #endregion
@@ -139,24 +150,25 @@ namespace DefaultNamespace
         {
             if (!hasAuthority)
             {
-                Command.CommandType commandType= (Command.CommandType) type;
+                Command.CommandType commandType = (Command.CommandType) type;
                 selectionManager.SelectedUnits.OverrideCommand(new Command(commandType, pos, isSingle));
             }
         }
 
         [Command]
-        private void CmdSendComplexeCommmand(NetworkInstanceId netID,int type,bool isSingle)
+        private void CmdSendComplexeCommmand(NetworkInstanceId netID, int type, bool isSingle)
         {
-            RpcSendComplexeCommand(netID, type,isSingle);
+            RpcSendComplexeCommand(netID, type, isSingle);
         }
 
         [ClientRpc]
-        private void RpcSendComplexeCommand(NetworkInstanceId netID,int type,bool isSingle)
+        private void RpcSendComplexeCommand(NetworkInstanceId netID, int type, bool isSingle)
         {
             if (!hasAuthority)
             {
-                Command.CommandType commandType= (Command.CommandType) type;
-                selectionManager.SelectedUnits.OverrideCommand(new Command(commandType, ClientScene.FindLocalObject(netID).transform, isSingle));
+                Command.CommandType commandType = (Command.CommandType) type;
+                selectionManager.SelectedUnits.OverrideCommand(new Command(commandType,
+                    ClientScene.FindLocalObject(netID).transform, isSingle));
             }
         }
     }

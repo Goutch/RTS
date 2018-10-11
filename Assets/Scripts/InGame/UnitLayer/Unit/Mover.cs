@@ -13,8 +13,10 @@ namespace DefaultNamespace
         public event MoverEventHandler OnMovingChange;
         public Transform transformToRotate;
         private Transform transformToMove;
+        private UnitAnimationController animsController;
         private List<Vector3> path;
         private bool isMoving = false;
+        private bool Stopped = false;
 
         public bool IsMoving
         {
@@ -34,11 +36,12 @@ namespace DefaultNamespace
             transformToMove = move;
             transformToRotate = rotate;
             path = new List<Vector3>();
+            animsController = GetComponent<UnitAnimationController>();
+
         }
 
         public void MoveToward(Vector3 target, float speed)
         {
-
             transformToMove.position =
                 Vector3.MoveTowards(this.transform.position, target, Time.fixedDeltaTime * speed);
         }
@@ -61,9 +64,19 @@ namespace DefaultNamespace
         public void ClearPath()
         {
             path.Clear();
+            IsMoving = false;
         }
 
+        public void Stop()
+        {
+            Stopped = true;
+            IsMoving = false;
+        }
 
+        public void UnStop()
+        {
+            Stopped = false;
+        }
         public void RotateToward(Vector3 target)
         {
             float AngleRad =
@@ -77,22 +90,25 @@ namespace DefaultNamespace
 
         public void MoveAndRotateToward(Vector3 destination, float moveSpeed)
         {
-            IsMoving = true;
-            if (path == null || !path.Any())
-                CreateNewPath(destination);
-            if (path.Any() && Vector2.Distance(transform.position, path.First()) < 0.2)
+            if (!Stopped)
             {
-                path.RemoveAt(0);
-                //reached destination
-                if (!path.Any())
+                IsMoving = true;
+                if (path == null || !path.Any())
+                    CreateNewPath(destination);
+                if (path.Any() && Vector2.Distance(transform.position, path.First()) < 0.2)
                 {
-                    IsMoving = false;
-                    return;
+                    path.RemoveAt(0);
+                    //reached destination
+                    if (!path.Any())
+                    {
+                        IsMoving = false;
+                        return;
+                    }
                 }
-            }
 
-            MoveToward(path[0], moveSpeed);
-            RotateToward(path[0]);
+                MoveToward(path[0], moveSpeed);
+                RotateToward(path[0]);
+            }
         }
     }
 }

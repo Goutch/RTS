@@ -74,7 +74,6 @@ GameObject:
   - component: {fileID: 114357768709242198}
   - component: {fileID: 114024303560565978}
   - component: {fileID: 114553259980809078}
-  - component: {fileID: 114931309852383854}
   - component: {fileID: 114621651346630864}
   - component: {fileID: 50709877770589102}
   - component: {fileID: 58877136840938966}
@@ -164,9 +163,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4089764447912768}
-  - component: {fileID: 58212061334429446}
+  - component: {fileID: 114607830549833512}
   m_Layer: 0
-  m_Name: AttackRange
+  m_Name: Caster
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -262,21 +261,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!58 &58212061334429446
-CircleCollider2D:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1945595456597832}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 0.5
 --- !u!58 &58315403051026378
 CircleCollider2D:
   m_ObjectHideFlags: 1
@@ -510,6 +494,17 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114607830549833512
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1945595456597832}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfbcd4cad4664f308c9cf39721986601, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114621651346630864
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -554,17 +549,6 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
---- !u!114 &114931309852383854
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1232228107389882}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bfbcd4cad4664f308c9cf39721986601, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114948656100523812
 MonoBehaviour:
   m_ObjectHideFlags: 1

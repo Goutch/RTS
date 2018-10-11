@@ -22,5 +22,6 @@ MonoBehaviour:
   baseSizeInPixel: 26
   baseSightRangeInPixel: 0
   baseAttackRangeInPixel: 0
-  abilities: []
+  abilities:
+  - {fileID: 11400000, guid: 98ff574395768d843b361c5b234eea36, type: 2}
   baseMass: 1

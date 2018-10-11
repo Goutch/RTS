@@ -9,12 +9,13 @@ using UnityEngine.Networking;
 namespace DefaultNamespace
 {
     public delegate void SelectionEndEventHandler(Rect Bounds, Camera playerCam);
-
+    
     public class SelectionManager : NetworkBehaviour
     {
         [SerializeField] private int maxSavedSelection = 10;
         [SerializeField] private Texture2D selectionHightlight;
         private SavedSelectionGrid savedSelections;
+        private SelectedUnitAbilitiesUI abilitiesUI;
         private UnitGroup selectedUnits;
 
         public UnitGroup SelectedUnits
@@ -40,12 +41,14 @@ namespace DefaultNamespace
             beiginPosition = -Vector2.one;
             collider = GetComponent<BoxCollider2D>();
             playerCam = Camera.main;
+            abilitiesUI = GetComponentInChildren<SelectedUnitAbilitiesUI>();
         }
 
 
         public void BeginSelection(Vector2 position)
         {
             beiginPosition = position;
+            
             if (hasAuthority)
             {
             }
@@ -55,12 +58,6 @@ namespace DefaultNamespace
         {
             if (hasAuthority)
             {
-                foreach (IUnit u in selectedUnits.Composants)
-                {
-                    u.SetSelected(false);
-                }
-
-
                 if (!addToExistingSelection)
                 {
                     CmdClearSelection();
@@ -70,10 +67,7 @@ namespace DefaultNamespace
                 NormalizeBounds();
                 beiginPosition = -Vector2.one;
                 if (OnSelectionEnd != null) OnSelectionEnd(selectionRect, playerCam);
-                foreach (IUnit u in selectedUnits.Composants)
-                {
-                    u.SetSelected(true);
-                }
+                abilitiesUI.UpdateAbilitesSlots(selectedUnits.GetData());
             }
         }
 

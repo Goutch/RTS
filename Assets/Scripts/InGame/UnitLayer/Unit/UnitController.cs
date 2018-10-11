@@ -36,7 +36,7 @@ public class UnitController : NetworkBehaviour, IUnit
         visual = GetComponentInChildren<SpriteRenderer>();
         animator = visual.GetComponent<Animator>();
         mover = GetComponent<Mover>();
-        abilityCaster = GetComponent<AbilityCaster>();
+        abilityCaster = GetComponentInChildren<AbilityCaster>();
         unitAnimationController = GetComponent<UnitAnimationController>();
         animator.runtimeAnimatorController = data.AnimsController;
 
@@ -48,11 +48,16 @@ public class UnitController : NetworkBehaviour, IUnit
         selectedCircle.transform.localScale = (data.size.Value / 32) * .5f * Vector2.one;
         this.name = data.Name;
         this.GetComponent<Health>().Init(data);
-        this.GetComponent<Selectable>().Init();
+        this.GetComponent<Selectable>().InitClient();
         this.GetComponent<Rigidbody2D>().mass = data.mass.Value;
         this.GetComponentInChildren<SpriteRenderer>().sprite = data.Sprite;
         this.GetComponent<CircleCollider2D>().radius = data.size.Value / 200;
         commandsQueue = new Queue<Command>();
+    }
+
+    public void InitAuthority()
+    {
+        this.GetComponent<Selectable>().InitAuthority();
     }
 
     private void FixedUpdate()
@@ -90,6 +95,11 @@ public class UnitController : NetworkBehaviour, IUnit
         selectedCircle.enabled = isSelected;
     }
 
+    public UnitData GetData()
+    {
+        return data;
+    }
+
     public Sprite GetSprite()
     {
         return visual.sprite;
@@ -108,5 +118,14 @@ public class UnitController : NetworkBehaviour, IUnit
         }
 
         return false;
+    }
+
+    public IEnumerator WaitForHauthorityRoutine()
+    {
+        while (!hasAuthority)
+        {
+            yield return 0;
+        }
+        InitAuthority();
     }
 }

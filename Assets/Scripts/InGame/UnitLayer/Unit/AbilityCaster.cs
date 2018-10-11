@@ -9,7 +9,7 @@ namespace DefaultNamespace
     {
         private UnitData data;
         private bool[] AbilitiesAvalable;
-        private bool castingLock;
+        private bool WaitingForDelay;
 
         private int currentAbilityIndex;
 
@@ -25,8 +25,8 @@ namespace DefaultNamespace
 
         public Transform CurrentTarget => currentTarget;
 
-
         private UnitAI AI;
+
 
         public void Init(UnitData data, UnitAI AI)
         {
@@ -38,43 +38,54 @@ namespace DefaultNamespace
                 AbilitiesAvalable[i] = true;
             }
 
-            animaitonController = GetComponent<UnitAnimationController>();
+            animaitonController = GetComponentInParent<UnitAnimationController>();
         }
 
-        [UsedImplicitly]
-        public void OnCastFinish()
+        public void OnCast()
         {
-            castingLock = false;
+            WaitingForDelay = false;
         }
 
         public bool CastAbility(int Index)
         {
             if (AbilitiesAvalable[Index])
             {
+                AbilitiesAvalable[Index] = false;
                 currentTarget = AI.CurrentCommand.TargetTransform;
                 currentTargetPosition = AI.CurrentCommand.Target;
                 currentAbilityIndex = Index;
                 data.Abilities[Index].Init(this);
-                StartCoroutine(StartAbilityRoutine(Index));
+                if (data.Abilities[Index].HasCastDelay)
+                {
+                    StartCoroutine(WaitAbilityDelayRoutine(Index));
+                }
+                else
+                {
+                    animaitonController.OnCastAbility();
+                    StartCoroutine(CastAbilityRoutine(Index));
+                }
                 return true;
             }
 
             return false;
         }
 
-        private IEnumerator StartAbilityRoutine(int Index)
+        private IEnumerator WaitAbilityDelayRoutine(int index)
         {
-            AbilitiesAvalable[Index] = false;
-            castingLock = data.Abilities[Index].CastLock;
+            WaitingForDelay = true;
             animaitonController.OnCastAbility();
-            while (castingLock)
+            while (WaitingForDelay)
             {
                 yield return 0;
             }
 
+            StartCoroutine(CastAbilityRoutine(index));
+        }
+
+        private IEnumerator CastAbilityRoutine(int Index)
+        {
             data.Abilities[Index].Cast();
             yield return new WaitForSeconds(data.Abilities[Index].Cooldown);
-
             AbilitiesAvalable[Index] = true;
         }
     }

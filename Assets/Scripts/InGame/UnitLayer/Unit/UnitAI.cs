@@ -36,10 +36,11 @@ namespace DefaultNamespace
 
         private void HandleMovingChange(bool moving)
         {
-            if (!moving)
+            if (CurrentCommand.type==Command.CommandType.Move&&!moving)
             {
                 OnCommandExecuted();
             }
+            
         }
 
         //idle
@@ -98,6 +99,7 @@ namespace DefaultNamespace
 
         private void Attack(Transform targetTransform)
         {
+            
             if (targetTransform == null)
             {
                 OnCommandExecuted();
@@ -106,7 +108,11 @@ namespace DefaultNamespace
 
             if (IsAbilityInRange(targetTransform))
             {
+                
+                mover.RotateToward(targetTransform.position);
+                mover.ClearPath();
                 abilityCaster.CastAbility(0);
+                
             }
             else
                 mover.MoveAndRotateToward(targetTransform.position, unitData.speed.Value);

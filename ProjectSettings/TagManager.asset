@@ -7,6 +7,7 @@ TagManager:
   - Map
   - LobbyManager
   - Unit
+  - UI
   layers:
   - Default
   - TransparentFX

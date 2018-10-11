@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using JetBrains.Annotations;
+using UnityEngine;
 
 namespace DefaultNamespace
 {
@@ -7,11 +8,12 @@ namespace DefaultNamespace
         private AbilityCaster caster;
         private void Start()
         {
-            caster = GetComponentInParent<AbilityCaster>();
+            caster = transform.parent.GetComponentInChildren<AbilityCaster>();
         }
-        public void OnCastFinish()
+        [UsedImplicitly]
+        public void OnCast(int index)
         {
-            caster.OnCastFinish();
+            caster.OnCast();
         }
     }
 }

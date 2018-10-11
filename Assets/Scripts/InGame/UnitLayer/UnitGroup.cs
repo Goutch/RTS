@@ -81,10 +81,21 @@ namespace DefaultNamespace
 
         public void SetSelected(bool isSelected)
         {
+            
             foreach (IUnit u in Composants)
             {
-                u.SetSelected(isSelected);
+                u?.SetSelected(isSelected);
             }
+        }
+
+        public UnitData GetData()
+        {
+            foreach (IUnit u in Composants)
+            {
+                return u.GetData();
+            }
+
+            return null;
         }
 
         public Sprite GetSprite()

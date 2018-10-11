@@ -9,11 +9,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e5036df0cc1f48ebb1f7cdd4b700ef61, type: 3}
-  m_Name: ZorglingAttack
+  m_Name: SoldierMelee
   m_EditorClassIdentifier: 
-  icon: {fileID: 21300014, guid: 3ba042bb5cb34ff41aec25b92614c508, type: 3}
+  icon: {fileID: 21300004, guid: 29f0fa1d6b0fce94987128289a8dea59, type: 3}
   description: 
-  cooldown: 0.5
-  hasCastDelay: 1
-  rangeInTiles: 0.1
-  damageValue: 5
+  cooldown: 0.2
+  hasCastDelay: 0
+  rangeInTiles: 4
+  damageValue: 1

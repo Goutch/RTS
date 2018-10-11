@@ -6,10 +6,9 @@ namespace DefaultNamespace.Abilities
     public class MeleeAttack:Ability
     {
         [SerializeField] private float damageValue;
-        [SerializeField] private float rangeInTile;
         public override void Cast()
         {
-            caster.CurrentTarget.GetComponent<Health>().Damage(damageValue);       
+            caster.CurrentTarget?.GetComponent<Health>().Damage(damageValue);       
         }
     }
 }

@@ -70,8 +70,6 @@ public class Spawner : NetworkBehaviour
     {
         GameObject unit = Instantiate(unitContainerPrefab, pos, Quaternion.identity, gamePlayerObjectTransform);
         NetworkServer.SpawnWithClientAuthority(unit, connectionToClient);
-        unit.GetComponent<UnitController>()
-            .Init(_factionData.SpawnableUnits[spawnDataIndex], _playerConnection.TeamId, gamePlayerObjectTransform);
         NetworkInstanceId netID = unit.GetComponent<NetworkIdentity>().netId;
         RpcInitUnit(netID, spawnDataIndex, _playerConnection.TeamId);
     }
@@ -79,11 +77,9 @@ public class Spawner : NetworkBehaviour
     [ClientRpc]
     public void RpcInitUnit(NetworkInstanceId id, int spawnDataIndex, int teamID)
     {
-        if (!isServer)
-        {
-            GameObject go = ClientScene.FindLocalObject(id);
-            go.GetComponent<UnitController>()
-                .Init(_factionData.SpawnableUnits[spawnDataIndex], teamID, gamePlayerObjectTransform);
-        }
+        UnitController unit = ClientScene.FindLocalObject(id).GetComponent<UnitController>();
+        unit.Init(_factionData.SpawnableUnits[spawnDataIndex], teamID, gamePlayerObjectTransform);
+        if (hasAuthority)
+            StartCoroutine(unit.WaitForHauthorityRoutine());
     }
 }
