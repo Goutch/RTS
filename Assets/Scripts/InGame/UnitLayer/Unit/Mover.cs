@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization.Formatters;
 using UnityEngine;
@@ -11,7 +12,7 @@ namespace DefaultNamespace
     public class Mover : MonoBehaviour
     {
         public event MoverEventHandler OnMovingChange;
-        public Transform transformToRotate;
+        [NonSerialized]public Transform transformToRotate;
         private Transform transformToMove;
         private UnitAnimationController animsController;
         private List<Vector3> path;

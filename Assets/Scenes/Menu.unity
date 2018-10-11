@@ -776,11 +776,6 @@ CanvasRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1079619717}
   m_CullTransparentMesh: 0
---- !u!4 &1086139375 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4573356718530176, guid: fadba8a5f3bf64847bd5d166038c9622,
-    type: 2}
-  m_PrefabInternal: {fileID: 1592011980}
 --- !u!1 &1109983288 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1363567563039200, guid: c27054c25b499904eab6cb58f7eeec01,
@@ -1169,16 +1164,6 @@ Prefab:
     - target: {fileID: 1232228107389882, guid: fadba8a5f3bf64847bd5d166038c9622, type: 2}
       propertyPath: m_IsActive
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114553259980809078, guid: fadba8a5f3bf64847bd5d166038c9622,
-        type: 2}
-      propertyPath: transformToRotate
-      value: 
-      objectReference: {fileID: 1086139375}
-    - target: {fileID: 95144336746491074, guid: fadba8a5f3bf64847bd5d166038c9622,
-        type: 2}
-      propertyPath: m_Controller
-      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fadba8a5f3bf64847bd5d166038c9622, type: 2}
