@@ -11,4 +11,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c38edf40b6847dcaed7257e6cc84205, type: 3}
   m_Name: BaseAI
   m_EditorClassIdentifier: 
-  executableCommands: 00000000
+  executableCommands: 0000000001000000
