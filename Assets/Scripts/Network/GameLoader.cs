@@ -11,12 +11,12 @@ public class GameLoader : MonoBehaviour
     private static int numberClientLoaded = 0;
 
 
-    private GameEventChannel _gameEventChannel;
+    private GameLoadEventChannel _gameLoadEventChannel;
     private RTSNetworkManager _networkManager;
 
     private void Awake()
     {
-        this.GetComponent<GameEventChannel>();
+        this.GetComponent<GameLoadEventChannel>();
     }
 
     public enum GameLoadingState
@@ -48,7 +48,7 @@ public class GameLoader : MonoBehaviour
 
     public void OnSceneChanged()
     {
-        _gameEventChannel = NetworkManager.singleton.GetComponent<GameEventChannel>();
+        _gameLoadEventChannel = NetworkManager.singleton.GetComponent<GameLoadEventChannel>();
         _networkManager = NetworkManager.singleton.GetComponent<RTSNetworkManager>();
     }
 
@@ -57,7 +57,7 @@ public class GameLoader : MonoBehaviour
         numberClientLoaded++;
         if (numberClientLoaded == _networkManager.ConnectedPlayers.Count)
         {
-            _gameEventChannel.OnPlayersObjectSpawned += OnPlayersSpawned;
+            _gameLoadEventChannel.OnPlayersObjectSpawned += OnPlayersSpawned;
             CurrentGameLoadingState = GameLoadingState.SpawnPlayersObjects;
             numberClientLoaded = 0;
         }
@@ -68,7 +68,7 @@ public class GameLoader : MonoBehaviour
         spawnedPlayersCount++;
         if (spawnedPlayersCount == _networkManager.ConnectedPlayers.Count)
         {
-            _gameEventChannel.OnPlayersObjectSpawned -= OnPlayersSpawned;
+            _gameLoadEventChannel.OnPlayersObjectSpawned -= OnPlayersSpawned;
             CurrentGameLoadingState = GameLoadingState.SettingPlayersObjectsReferences;
         }
     }
@@ -78,7 +78,7 @@ public class GameLoader : MonoBehaviour
         playersRefereneSetCount++;
         if (playersRefereneSetCount == _networkManager.ConnectedPlayers.Count)
         {
-            _gameEventChannel.OnPlayerReferenceSet -= OnPlayerReferenceSet;
+            _gameLoadEventChannel.OnPlayerReferenceSet -= OnPlayerReferenceSet;
             CurrentGameLoadingState = GameLoadingState.InitPlayersObjects;
         }
     }

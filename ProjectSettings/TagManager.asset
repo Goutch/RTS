@@ -8,6 +8,8 @@ TagManager:
   - LobbyManager
   - Unit
   - UI
+  - Mineral
+  - Gas
   layers:
   - Default
   - TransparentFX

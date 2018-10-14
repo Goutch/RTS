@@ -1,4 +1,6 @@
-﻿using UnityEditor;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Networking.Match;
@@ -30,6 +32,16 @@ public class MainMenu : MonoBehaviour
         IPAdresseInputField.text = "127.0.0.1";
     }
 
+    public void OnClickFindMatch()
+    {
+       // NetworkManager.singleton.matchMaker.JoinMatch(NetworkManager.singleton.matches[0].networkId,"","","",0,1,waitFormConnectionRoutine());
+        //https://github.com/Brackeys/MultiplayerFPS-Tutorial/blob/master/MultiplayerFPS/Assets/Scripts/JoinGame.cs
+    }
+
+    public void OnClickCreateMatch()
+    {
+        
+    }
     public void OnClickHost()
     {
         ChangeToLobbyPanel();
@@ -49,5 +61,9 @@ public class MainMenu : MonoBehaviour
     {
         mainMenuPanel.SetActive(false);
         lobbyPanel.SetActive(true);
+    }
+    IEnumerator waitFormConnectionRoutine()
+    {
+        yield return null;
     }
 }

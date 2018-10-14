@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using DefaultNamespace;
 using Game;
+using Player;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering;
 using UnityEngine.Networking;
@@ -25,7 +26,7 @@ public class NetworkPlayerConnection : NetworkBehaviour
     public int TeamId => teamID;
 
     private RTSNetworkManager _networkManager;
-    private GameEventChannel _gameEventChannel;
+    private GameLoadEventChannel _gameLoadEventChannel;
     private GameLoader _gameLoader;
     private LobbyPlayerManager lobbyPlayer;
     private PlayerManager gamePlayer;
@@ -39,7 +40,7 @@ public class NetworkPlayerConnection : NetworkBehaviour
         _networkManager.RegisterPlayer(this);
         _networkManager.OnNetworkStateChange += HandleNetworkStateChange;
         _networkManager.GetComponent<LobbyEventChannel>().OnLobbyPlayerSpawned += SetReferenceToLobbyPlayer;
-        _gameEventChannel = _networkManager.GetComponent<GameEventChannel>();
+        _gameLoadEventChannel = _networkManager.GetComponent<GameLoadEventChannel>();
         _gameLoader = _networkManager.GetComponent<GameLoader>();
         spawner = GetComponent<Spawner>();
         Debug.Log("Client Network Player start");
@@ -284,8 +285,8 @@ public class NetworkPlayerConnection : NetworkBehaviour
     [Server]
     private void OnAllClientsFinishedLoadingScene()
     {
-        _gameEventChannel.OnALlPlayerSceneLoaded += CmdClientsLoadedScene;
-        _gameEventChannel.NotifyPlayerSceneLoaded();
+        _gameLoadEventChannel.OnALlPlayerSceneLoaded += CmdClientsLoadedScene;
+        _gameLoadEventChannel.NotifyPlayerSceneLoaded();
     }
 
     [Command]
@@ -326,14 +327,14 @@ public class NetworkPlayerConnection : NetworkBehaviour
     private void RpcSetReferenceGamePlayerObject(NetworkInstanceId instanceId)
     {
         SetReferenceToGamePlayer(instanceId);
-        _gameEventChannel.OnPlayerReferenceSet += CmdAllClientsPlayerReferenceSet;
+        _gameLoadEventChannel.OnPlayerReferenceSet += CmdAllClientsPlayerReferenceSet;
         CmdOnReferenceSetForClient();
     }
 
     [Command]
     private void CmdOnReferenceSetForClient()
     {
-        _gameEventChannel.NotifyPlayerReferenceSet();
+        _gameLoadEventChannel.NotifyPlayerReferenceSet();
     }
 
     [Command]
@@ -351,12 +352,12 @@ public class NetworkPlayerConnection : NetworkBehaviour
     [Command]
     private void CmdClientFinishedLoadingGame()
     {
-        _gameEventChannel.OnAllPlayerGameLoaded += CmdAllClientsGameIsLoaded;
-        _gameEventChannel.NotifyPlayerGameLoaded();
+        _gameLoadEventChannel.OnAllPlayerGameLoaded += CmdAllClientsGameLoadIsLoaded;
+        _gameLoadEventChannel.NotifyPlayerGameLoaded();
     }
 
     [Command]
-    private void CmdAllClientsGameIsLoaded()
+    private void CmdAllClientsGameLoadIsLoaded()
     {
         RpcAlllClientsGameIsLoaded();
     }

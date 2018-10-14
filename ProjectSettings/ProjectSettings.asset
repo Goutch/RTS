@@ -14,7 +14,7 @@ PlayerSettings:
   accelerometerFrequency: 60
   companyName: DefaultCompany
   productName: 2DRTS
-  defaultCursor: {fileID: 0}
+  defaultCursor: {fileID: 2800000, guid: 798838ea0f16adb4f80f28fc2143cdb7, type: 3}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
   m_ShowUnitySplashScreen: 1
@@ -614,11 +614,15 @@ PlayerSettings:
       daydreamIconForeground: {fileID: 0}
       daydreamIconBackground: {fileID: 0}
   cloudServicesEnabled:
+    Build: 0
+    Collab: 0
+    ErrorHub: 0
+    Hub: 0
     UNet: 1
   facebookSdkVersion: 7.9.4
   apiCompatibilityLevel: 3
-  cloudProjectId: 290e14d4-645b-4bab-9521-b3ed57fc035a
-  projectName: 2DRTS
+  cloudProjectId: ade642b0-79e7-46c5-991d-5b3841808cc0
+  projectName: 2DRTS (1)
   organizationId: goutch
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0
