@@ -11,7 +11,6 @@ namespace DefaultNamespace
         [SerializeField] private Vector2[] startUnitsOffSetPosition;
         [SerializeField] private List<UnitData> spawnableUnits;
         
-
         public string Name => name;
 
         public UnitData[] StartUnits => startUnits;

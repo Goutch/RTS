@@ -35,7 +35,7 @@ namespace DefaultNamespace
 
         protected  void HandleMovingChange(bool moving)
         {
-            if (CurrentCommand.type == Command.CommandType.Move && !moving)
+            if (CurrentCommand!=null&&CurrentCommand.type == Command.CommandType.Move && !moving)
             {
                 OnCommandExecuted();
             }
@@ -65,10 +65,10 @@ namespace DefaultNamespace
         //what the unit do when it doesent have any commands
         protected virtual void idle()
         {
-            //if (sight.EnemyUnitsInSight.Any())
-            //{
-            //    command=new Command(Command.CommandType.Attack,sight.EnemyUnitsInSight[0],true);
-            //}
+            if (sight.EnemyUnitsInSight.Any())
+            {
+                command=new Command(Command.CommandType.Attack,sight.EnemyUnitsInSight[0],true);
+            }
         }
 
         //set Command
@@ -85,9 +85,10 @@ namespace DefaultNamespace
         }
 
 
-        protected  void OnCommandExecuted()
+        public void OnCommandExecuted()
         {
             command = null;
+            mover.ClearPath();
         }
 
         protected  void Move(Vector2 target)

@@ -6,24 +6,22 @@ using DefaultNamespace;
 using UnityEngine;
 
 
-    [CreateAssetMenu(fileName = "Info", menuName = "Info/Unit")]
+    [CreateAssetMenu(fileName = "UnitData", menuName = "Data/Unit")]
     public class UnitData : ScriptableObject
     {
         [SerializeField] private Sprite sprite;
         [SerializeField] private UnitAI unitAI;
         [SerializeField] private RuntimeAnimatorController animatorController;
-        [SerializeField] private Color color;
         [SerializeField] private string name;
         [Header("Stats")]
         [SerializeField] private float baseHealth;
         [SerializeField] private float baseArmor;
         [SerializeField] private float baseSpeed;
         [SerializeField] private float baseSizeInPixel;
-        [SerializeField] private float baseSightRangeInPixel;
-        [SerializeField] private float baseAttackRangeInPixel;
-        [Tooltip("The abilities the unit will be able to cast, note that the first one is the unit basic Attack")]
-        [SerializeField] private List<Ability> abilities; 
+        [SerializeField] private float baseSightRangeInTile;   
         [SerializeField] private float baseMass;
+        [SerializeField] private List<Ability> abilities; 
+
 
         public string Name => name;
 
@@ -36,22 +34,16 @@ using UnityEngine;
         public RuntimeAnimatorController AnimsController=>animatorController;
    
         public Stat health;
-        public Stat armor;
         public Stat speed;
-        public Stat damage;
         public Stat size;
-        public Stat sightRange;
-        public Stat attackRange;
+        public float sightRange=>baseSightRangeInTile*.32f;
         public Stat mass;
         
         public void Init()
         {
             health = new Stat(baseHealth);
-            armor = new Stat(baseArmor);
             speed= new Stat(baseSpeed);
             size= new Stat( baseSizeInPixel);
-            sightRange= new Stat(baseSightRangeInPixel);
-            attackRange= new Stat(baseAttackRangeInPixel);
             mass= new Stat(baseMass);
         }
     }

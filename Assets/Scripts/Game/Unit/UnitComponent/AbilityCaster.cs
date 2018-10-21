@@ -1,45 +1,44 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using AbilitySystem;
+using AbilitySystem.Abilities;
 using DefaultNamespace;
 using JetBrains.Annotations;
 using Player;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace UnitComponent
 {
-    public class AbilityCaster : MonoBehaviour
+    public class AbilityCaster : NetworkBehaviour
     {
+        [SerializeField] private GameObject projectilePrefabObject;
         private UnitData data;
-        
         private bool[] AbilitiesAvalable;
-        
         private bool WaitingForDelay;
-
         private int currentAbilityIndex;
-
-        public int CurrentAbilityIndex => currentAbilityIndex;
-
+        private AbilityTargetType targetType;
         private Vector2 currentTargetPosition;
-
-        public Vector2 CurrentTargetPosition => currentTargetPosition;
-
+        private Transform currentTarget;
         private UnitAnimationController animaitonController;
 
-        private Transform currentTarget;
-
+        public int CurrentAbilityIndex => currentAbilityIndex;
+        public Vector2 CurrentTargetPosition => currentTargetPosition;
         public Transform CurrentTarget => currentTarget;
-        
+
+        public AbilityTargetType TargetType => targetType;
+
         private UnitAI AI;
-
         private Spawner spawner;
+        private int teamId;
 
-        public void Init(UnitData data, UnitAI AI,Spawner spawner)
+
+        public void Init(UnitData data, UnitAI AI, Spawner spawner)
         {
             this.AI = AI;
             this.data = data;
             this.spawner = spawner;
-            
+            teamId = spawner.GetComponent<NetworkPlayerConnection>().TeamId;
             AbilitiesAvalable = new bool[this.data.Abilities.Count];
             for (int i = 0; i < AbilitiesAvalable.Length; i++)
             {
@@ -56,22 +55,33 @@ namespace UnitComponent
 
         public bool CastAbility(int Index)
         {
-            if (AbilitiesAvalable[Index])
+            if (AbilitiesAvalable[Index] && data.Abilities[Index].CanCast(this))
             {
                 AbilitiesAvalable[Index] = false;
-                currentTarget = AI.CurrentCommand.TargetTransform;
-                currentTargetPosition = AI.CurrentCommand.Target;
+
+                if (AI.CurrentCommand.TargetTransform != null)
+                {
+                    currentTarget = AI.CurrentCommand.TargetTransform;
+                    currentTargetPosition = currentTarget.position;
+                }
+                else
+                {
+                    currentTargetPosition = AI.CurrentCommand.Target;
+                }
+
                 currentAbilityIndex = Index;
-                data.Abilities[Index].Init(this);
+                data.Abilities[Index].StartAbility(this);
                 if (data.Abilities[Index].HasCastDelay)
                 {
                     StartCoroutine(WaitAbilityDelayRoutine(Index));
                 }
+                
                 else
                 {
                     animaitonController.OnCastAbility();
                     StartCoroutine(CastAbilityRoutine(Index));
                 }
+                
                 return true;
             }
 
@@ -97,14 +107,31 @@ namespace UnitComponent
             AbilitiesAvalable[Index] = true;
         }
 
-        public void Shoot(ProjectileData projectileData)
+        public void SpawnProjectile(Projectile projectile)
         {
-            spawner.SpawnProjectile(projectileData,this.transform.position,this.transform.rotation);
+            if (hasAuthority)
+                CmdShootProjectile(data.Abilities.IndexOf(projectile));
         }
 
-        public void SpawnUnit(UnitData data)
+        public void SpawnUnit(UnitData data, Vector2 position)
         {
-            
+            spawner.SpawnUnit(data, position);
+        }
+
+        [Command]
+        private void CmdShootProjectile(int abilityIndex)
+        {
+            spawner.SpawnProjectile((Projectile) data.Abilities[abilityIndex], transform.position,
+                CurrentTargetPosition, teamId);
+        }
+
+        [ClientRpc]
+        private void RpcShootProjectile(int abilityIndex)
+        {
+            ProjectileController projectile =
+                Instantiate(projectilePrefabObject, transform.position, transform.rotation)
+                    .GetComponent<ProjectileController>();
+            projectile.Init((Projectile) data.Abilities[abilityIndex], CurrentTargetPosition, teamId);
         }
     }
 }

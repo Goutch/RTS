@@ -11,9 +11,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5036df0cc1f48ebb1f7cdd4b700ef61, type: 3}
   m_Name: ZorglingAttack
   m_EditorClassIdentifier: 
+  name: 
   icon: {fileID: 21300014, guid: 3ba042bb5cb34ff41aec25b92614c508, type: 3}
   description: 
   cooldown: 0.5
   hasCastDelay: 1
+  requireTarget: 0
   rangeInTiles: 0.1
-  damageValue: 5
+  targetTypes: 00000000
+  damageValue: 2

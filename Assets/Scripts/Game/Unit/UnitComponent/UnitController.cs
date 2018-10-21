@@ -34,7 +34,7 @@ namespace UnitComponent
             sight = GetComponentInChildren<Sight>();
             visual = GetComponentInChildren<SpriteRenderer>();
             mover = GetComponent<Mover>();
-            abilityCaster = GetComponentInChildren<AbilityCaster>();
+            abilityCaster = GetComponent<AbilityCaster>();
             unitAnimationController = GetComponent<UnitAnimationController>();
             visual.GetComponent<Animator>().runtimeAnimatorController = data.AnimsController;
 
@@ -47,11 +47,12 @@ namespace UnitComponent
             selectedCircle.transform.localScale = (data.size.Value / 32) * .5f * Vector2.one;
 
             this.name = data.Name;
-            this.GetComponent<Health>().Init(data);
+            this.GetComponent<Status>().Init(data);
             this.GetComponent<Selectable>().InitClient();
-            this.GetComponent<Rigidbody2D>().mass = data.mass.Value;
+          this.GetComponent<Rigidbody2D>().mass = data.mass.Value;
             this.GetComponentInChildren<SpriteRenderer>().sprite = data.Sprite;
-            this.GetComponent<CircleCollider2D>().radius = data.size.Value / 200;
+            GetComponent<CircleCollider2D>().radius= data.size.Value / 200;
+            sight.GetComponent<CircleCollider2D>().radius = data.sightRange;
 
             commandsQueue = new Queue<Command>();
         }

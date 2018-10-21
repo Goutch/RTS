@@ -7,9 +7,10 @@ namespace AbilitySystem
     public class MeleeAttack:Ability
     {
         [SerializeField] private float damageValue;
-        public override void Cast()
-        {
-            caster.CurrentTarget?.GetComponent<Health>().Damage(damageValue);       
+
+        private void OnEnable()
+        {  
+            AbilityBehaviors.Add(new Damage(damageValue,AbilityBehavior.BehiaviorTime.Cast));
         }
     }
 }

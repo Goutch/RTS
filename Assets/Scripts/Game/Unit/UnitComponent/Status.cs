@@ -6,16 +6,16 @@ namespace UnitComponent
 {
     public delegate void HealthEventHandler();
 
-    public class Health : NetworkBehaviour
+    public class Status : NetworkBehaviour
     {
         [SerializeField] private RectTransform healthFillAmount;
-        private Stat health;
+        private Stat status;
         public event HealthEventHandler OnDeath;
         public event HealthEventHandler OnHealthChange;
 
         public void Init(UnitData data)
         {
-            health = data.health;
+            status = data.health;
         }
 
         public override void OnNetworkDestroy()
@@ -26,7 +26,7 @@ namespace UnitComponent
         public void Damage(float amount)
         {
             if (isServer)
-                CmdChangeHealth(health.Value - amount);
+                CmdChangeHealth(status.Value - amount);
         }
 
         [ServerCallback]
@@ -53,9 +53,9 @@ namespace UnitComponent
         private void RpcChangeHealth(float newHealth)
         {
             OnHealthChange?.Invoke();
-            health.Value = newHealth;
+            status.Value = newHealth;
             healthFillAmount.localScale =
-                Vector3.one - Vector3.right + (Vector3.right * (health.Value / health.MaxValue));
+                Vector3.one - Vector3.right + (Vector3.right * (status.Value / status.MaxValue));
         }
 
         [Command]

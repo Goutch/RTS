@@ -19,7 +19,7 @@ namespace UnitComponent
 
         private List<Transform> allyUnitsInSight;
 
-        public List<Transform> AnnemyUnitsInSight
+        public List<Transform> AlliesUnitsInSight
         {
             get
             {
@@ -37,12 +37,15 @@ namespace UnitComponent
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-
             if (other.tag == "Unit")
             {
                 if (other.GetComponent<UnitController>().TeamId == myController.TeamId)
                 {
                     allyUnitsInSight.Add(other.transform);
+                }
+                else
+                {
+                    enemyUnitsInSight.Add(other.transform);
                 }
             }
         }

@@ -28,7 +28,6 @@ public class Selectable : NetworkBehaviour
         {
             manager.OnSelectionEnd -= OnSelectionEnd;
         }
-
         base.OnNetworkDestroy();
     }
 

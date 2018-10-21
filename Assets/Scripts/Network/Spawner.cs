@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using AbilitySystem;
+using AbilitySystem.Abilities;
 using DefaultNamespace;
 using UnitComponent;
 using UnityEngine;
@@ -11,16 +12,30 @@ namespace Player
     {
         [SerializeField] private GameObject unitContainerPrefab;
         [SerializeField] private GameObject projectileContainerPrefab;
-        [SerializeField] private List<ProjectileData> spawnableProjectileData;
+        private readonly List<Projectile> spawnableProjectiles=new List<Projectile>();
         private NetworkPlayerConnection _playerConnection;
         private UnitFactionData _factionData;
         private RTSNetworkManager _networkManager;
         private Transform gamePlayerObjectTransform;
-        
+
         private UnitFactionData FactionData
         {
             get { return _factionData; }
-            set { _factionData = Instantiate(value); }
+            set
+            {
+                Destroy(_factionData);
+                _factionData = Instantiate(value);
+                foreach (var unit in _factionData.SpawnableUnits)
+                {
+                    foreach (var ability in unit.Abilities)
+                    {
+                        if (ability is Projectile)
+                        {
+                            spawnableProjectiles.Add((Projectile) ability);
+                        }
+                    }
+                }
+            }
         }
 
         public int factionIndex = 0;
@@ -59,9 +74,9 @@ namespace Player
             CmdSpawnUnit(_factionData.SpawnableUnits.IndexOf(data), pos);
         }
 
-        public void SpawnProjectile(ProjectileData data,Vector2 pos,Quaternion dir)
+        public void SpawnProjectile(Projectile proj, Vector2 pos, Vector2 dir, int teamId)
         {
-            CmdSpawnProjectile(spawnableProjectileData.IndexOf(data),pos,dir);
+            CmdSpawnProjectile(spawnableProjectiles.IndexOf(proj), pos, dir, teamId);
         }
 
         public void ChangeFaction(int index)
@@ -94,15 +109,18 @@ namespace Player
         }
 
         [Command]
-        public void CmdSpawnProjectile(int spawnDataIndex, Vector2 pos, Quaternion dir)
+        public void CmdSpawnProjectile(int dataPrefabIndex, Vector2 pos, Vector2 dir, int teamId)
         {
-            
+            GameObject proj = Instantiate(projectileContainerPrefab, pos, Quaternion.identity);
+            NetworkServer.Spawn(proj);
+            RpcSpawnProjectile(proj.GetComponent<NetworkIdentity>().netId, dir, dataPrefabIndex, teamId);
         }
 
         [ClientRpc]
-        public void RpcSpawnProjectile(int spawnDataIndex, Vector2 pos, Quaternion dir)
+        public void RpcSpawnProjectile(NetworkInstanceId netId, Vector2 dir, int dataPrefabIndex, int teamId)
         {
-            
+            ProjectileController proj = ClientScene.FindLocalObject(netId).GetComponent<ProjectileController>();
+            proj.Init(spawnableProjectiles[dataPrefabIndex], dir, teamId);
         }
     }
 }

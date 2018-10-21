@@ -21,6 +21,7 @@ namespace InGame.World.Ressources
         {
             tilemap = GetComponent<Tilemap>();
             type = dataPrefab.Type;
+            ressources=new Dictionary<Vector3Int, RessourceData>();
             for (int x = -WorldMap.INSTANCE.Size.x; x < WorldMap.INSTANCE.Size.x; x++)
             {
                 for (int y = -WorldMap.INSTANCE.Size.x; y < WorldMap.INSTANCE.Size.y; y++)

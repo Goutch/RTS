@@ -55,6 +55,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitContainerPrefab: {fileID: 1232228107389882, guid: fadba8a5f3bf64847bd5d166038c9622,
     type: 2}
+  projectileContainerPrefab: {fileID: 1671918816746666, guid: a0ba8d8710849ad4bbdec7904b1519cf,
+    type: 2}
   factionIndex: 0
 --- !u!114 &114349310926873870
 MonoBehaviour:

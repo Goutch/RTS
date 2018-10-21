@@ -126,7 +126,6 @@ namespace DefaultNamespace
             return contain;
         }
 
-
         public void Add(IUnit unit)
         {
             for (int i = 0; i < composants.Count; i++)

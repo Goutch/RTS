@@ -13,12 +13,14 @@ namespace UnitComponent
     public class Mover : MonoBehaviour
     {
         public event MoverEventHandler OnMovingChange;
-        [NonSerialized]public Transform transformToRotate;
-        [SerializeField] private float Precision=0.2f;
+        [NonSerialized] public Transform transformToRotate;
+        [SerializeField] private float Precision = 0.2f;
+        private Rigidbody2D rigidbody2D;
         private Pathfinder pathFinder;
         private Transform transformToMove;
         private UnitAnimationController animsController;
         private List<Vector3> path;
+        private Vector2 currentDir;
         private bool isMoving = false;
         private bool Stopped = false;
 
@@ -42,12 +44,19 @@ namespace UnitComponent
             path = new List<Vector3>();
             animsController = GetComponent<UnitAnimationController>();
             pathFinder = WorldMap.INSTANCE.pathFinder;
+            rigidbody2D = transformToMove.GetComponent<Rigidbody2D>();
         }
 
         public void MoveToward(Vector3 target, float speed)
         {
             transformToMove.position =
                 Vector3.MoveTowards(this.transform.position, target, Time.fixedDeltaTime * speed);
+        }
+
+        private void MoveFoward(float speed)
+        {
+            rigidbody2D.velocity = currentDir*speed;
+           // rigidbody2D.MovePosition(transform.position+(Vector3)currentDir*speed);
         }
 
         public void CreateNewPath(Vector2 destination)
@@ -75,12 +84,14 @@ namespace UnitComponent
         {
             Stopped = true;
             IsMoving = false;
+            rigidbody2D.velocity = Vector2.zero;
         }
 
         public void UnStop()
         {
             Stopped = false;
         }
+
         public void RotateToward(Vector3 target)
         {
             float AngleRad =
@@ -89,6 +100,7 @@ namespace UnitComponent
             //Angle en Degrés
             float AngleDeg = (180 / Mathf.PI) * AngleRad;
             // Rotation
+            currentDir = new Vector2(Mathf.Cos(AngleRad), Mathf.Sin(AngleRad));
             transformToRotate.rotation = Quaternion.Euler(0, 0, AngleDeg - 90);
         }
 
@@ -102,16 +114,19 @@ namespace UnitComponent
                 if (path.Any() && Vector2.Distance(transform.position, path.First()) <= Precision)
                 {
                     path.RemoveAt(0);
+                    
                     //reached destination
                     if (!path.Any())
                     {
                         IsMoving = false;
+                        rigidbody2D.velocity = Vector2.zero;
                         return;
                     }
+                    
                 }
 
-                MoveToward(path[0], moveSpeed);
                 RotateToward(path[0]);
+                MoveFoward(moveSpeed);
             }
         }
     }

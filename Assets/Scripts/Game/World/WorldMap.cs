@@ -47,7 +47,6 @@ namespace Game
                     UpdateNode(position);
                 }
             }
-
             pathFinder = new Pathfinder(this);
         }
 
