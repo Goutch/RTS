@@ -8,7 +8,7 @@ using UnityEngine.Networking;
 
 namespace UnitComponent
 {
-    public class UnitController : NetworkBehaviour, IUnit
+    public class UnitController : NetworkBehaviour
     {
         [SerializeField] private SpriteRenderer selectedCircle;
         private UnitData data;
@@ -37,21 +37,21 @@ namespace UnitComponent
             abilityCaster = GetComponent<AbilityCaster>();
             unitAnimationController = GetComponent<UnitAnimationController>();
             visual.GetComponent<Animator>().runtimeAnimatorController = data.AnimsController;
-
+            Selectable selectable = this.GetComponent<Selectable>();
             AI = Instantiate(data.AI);
-            AI.Init(mover, sight, abilityCaster, unitAnimationController, data);
+            AI.Init(mover, sight, abilityCaster, unitAnimationController,selectable, data);
 
             unitAnimationController.Init(visual.GetComponent<Animator>(), abilityCaster, mover);
             abilityCaster.Init(data, AI,parent.GetComponent<PlayerManager>().MyNetworkPlayer.GetComponent<Spawner>());
             mover.Init(transform, visual.transform);
-            selectedCircle.transform.localScale = (data.size.Value / 32) * .5f * Vector2.one;
+            selectedCircle.transform.localScale = (data.size.Value / 24)* Vector2.one;
 
             this.name = data.Name;
             this.GetComponent<Status>().Init(data);
-            this.GetComponent<Selectable>().InitClient();
+            selectable.InitClient();
           this.GetComponent<Rigidbody2D>().mass = data.mass.Value;
             this.GetComponentInChildren<SpriteRenderer>().sprite = data.Sprite;
-            GetComponent<CircleCollider2D>().radius= data.size.Value / 200;
+            GetComponent<CircleCollider2D>().radius= (data.size.Value / 32)*.35f;
             sight.GetComponent<CircleCollider2D>().radius = data.sightRange;
 
             commandsQueue = new Queue<Command>();
@@ -97,30 +97,6 @@ namespace UnitComponent
             selectedCircle.enabled = isSelected;
         }
 
-        public UnitData GetData()
-        {
-            return data;
-        }
-
-        public Sprite GetSprite()
-        {
-            return visual.sprite;
-        }
-
-        public int GetNumber()
-        {
-            return 1;
-        }
-
-        public bool Contains(IUnit unit)
-        {
-            if (unit == (IUnit) this)
-            {
-                return true;
-            }
-
-            return false;
-        }
 
         public IEnumerator WaitForHauthorityRoutine()
         {

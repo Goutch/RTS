@@ -6,30 +6,33 @@ namespace Selection
 {
     public class SavedSelectionSlot : MonoBehaviour
     {
-        private UnitGroup savedGroup;
+        private Crowd savedGroup;
         private Text numberUnitInGroup;
         private Image icon;
 
-        public UnitGroup SavedGroup
+        public Crowd SavedGroup
         {
             get
             {
                 if (savedGroup == null)
-                    return new UnitGroup();
-                return new UnitGroup(savedGroup.Composants);
+                    return new Crowd();
+                return new Crowd(savedGroup.Composants);
             }
             set
             {
-                savedGroup = new UnitGroup(value.Composants);
+                savedGroup = new Crowd(value.Composants);
                 icon.sprite = value.GetSprite();
-                numberUnitInGroup.text = value.GetNumber().ToString();
+                numberUnitInGroup.text = value.Composants.Count.ToString();
             }
         }
 
-        public void addToGroup(UnitGroup groupToAdd)
+        public void addToGroup(Crowd groupToAdd)
         {
-            SavedGroup.Add(new UnitGroup(groupToAdd.Composants));
-            numberUnitInGroup.text = SavedGroup.GetNumber().ToString();
+            foreach (var u in groupToAdd.Composants)
+            {
+                SavedGroup.Add(u);
+            }
+            numberUnitInGroup.text = SavedGroup.Composants.Count.ToString();
         }
 
         private void Awake()
@@ -40,7 +43,7 @@ namespace Selection
 
         public void OnRemove()
         {
-            savedGroup = new UnitGroup();
+            savedGroup = new Crowd();
             this.gameObject.SetActive(false);
         }
     }

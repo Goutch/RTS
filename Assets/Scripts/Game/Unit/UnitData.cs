@@ -36,7 +36,7 @@ using UnityEngine;
         public Stat health;
         public Stat speed;
         public Stat size;
-        public float sightRange=>baseSightRangeInTile*.32f;
+        public float sightRange=>baseSightRangeInTile;
         public Stat mass;
         
         public void Init()

@@ -1,9 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using UnitComponent;
 using UnityEngine;
-using UnityEngine.Experimental.PlayerLoop;
 
 namespace DefaultNamespace
 {
@@ -18,16 +15,19 @@ namespace DefaultNamespace
         protected UnitController myController;
         protected AbilityCaster abilityCaster;
         protected UnitAnimationController animationController;
+        protected Selectable selectable;
+        protected Vector2 crowdDestination;
         public bool HasCommand => command != null;
         public Command CurrentCommand => command;
 
         public void Init(Mover mover, Sight sight,  AbilityCaster abilityCaster,
-            UnitAnimationController animationController, UnitData data)
+            UnitAnimationController animationController,Selectable selectable ,UnitData data)
         {
             this.animationController = animationController;
             myController = mover.GetComponent<UnitController>();
             this.mover = mover;
             mover.OnMovingChange += HandleMovingChange;
+            this.selectable = selectable;
             this.sight = sight;
             this.abilityCaster = abilityCaster;
             this.unitData = data;
@@ -49,7 +49,7 @@ namespace DefaultNamespace
                 switch (command.type)
                 {
                     case Command.CommandType.Move:
-                        Move(command.Target);
+                        Move(crowdDestination);
                         break;
                     case Command.CommandType.Attack:
                         Attack(command.TargetTransform);
@@ -76,6 +76,8 @@ namespace DefaultNamespace
         {
             if (executableCommands.Contains(command.type))
             {
+                Vector2 leaderOffSet = (Vector2)myController.transform.position-selectable.CurrentCrowd.CrowdLeaderPosition;
+                crowdDestination = command.Target + leaderOffSet;
                 mover.ClearPath();
                 this.command = command;
                 return true;
@@ -93,6 +95,7 @@ namespace DefaultNamespace
 
         protected  void Move(Vector2 target)
         {
+            
             mover.MoveAndRotateToward(target, unitData.speed.Value);
         }
 

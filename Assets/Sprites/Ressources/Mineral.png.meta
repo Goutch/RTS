@@ -2,9 +2,18 @@ fileFormatVersion: 2
 guid: a1410d06eec7cf14f926ee45efe6ccf3
 TextureImporter:
   fileIDToRecycleName:
-    21300000: Mineral_0
-    21300002: Mineral_1
-    21300004: Mineral_2
+    21300000: Zorgling_0
+    21300002: Zorgling_1
+    21300004: Zorgling_2
+    21300006: Zorgling_3
+    21300008: Zorgling_4
+    21300010: Zorgling_5
+    21300012: Zorgling_6
+    21300014: Zorgling_7
+    21300016: Zorgling_8
+    21300018: Mineral_0
+    21300020: Mineral_1
+    21300022: Mineral_2
   externalObjects: {}
   serializedVersion: 7
   mipmaps:
@@ -48,7 +57,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 32
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -101,7 +110,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 22144a0dce93c3742980bc3e248e045d
+      spriteID: 56194bbf630c6154c9eff855bdd67e96
       vertices: []
       indices: 
       edges: []
@@ -121,7 +130,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 395dd5708be95894d8347d1ce56f7872
+      spriteID: ea18dc8132606b14496f2ccf10f6aaed
       vertices: []
       indices: 
       edges: []
@@ -141,7 +150,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 40318011c18890142aa7f27b54d54fb3
+      spriteID: dafeb73b65bd00a428c0b293b540ea3f
       vertices: []
       indices: 
       edges: []
@@ -149,7 +158,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 019d32657f85a734f99e0441268f2264
+    spriteID: b36db2202dd93c444827936df093ff9f
     vertices: []
     indices: 
     edges: []

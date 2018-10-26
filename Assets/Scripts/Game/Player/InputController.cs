@@ -51,7 +51,7 @@ namespace Player
                         {
                             Command command = new Command( Command.CommandType.Move, Camera.main.ScreenToWorldPoint(Input.mousePosition),  false);
                             selectionManager.SelectedUnits.OverrideCommand(command);
-                            CmdSendBasicCommand(command.Target, (int) command.Type, command.IsSingle);
+                            CmdSendBasicCommand(command.Target, (int) command.Type, command.SingleCommand);
                         }
                     }
                     //other unit
@@ -63,7 +63,7 @@ namespace Player
                         Command command = new Command(Command.CommandType.Attack, hit.transform, false);
                         selectionManager.SelectedUnits.OverrideCommand(command);
                         CmdSendComplexeCommmand(command.TargetTransform.GetComponent<NetworkIdentity>().netId,
-                            (int) command.type, command.IsSingle);
+                            (int) command.type, command.SingleCommand);
                         // }
                         //my team
                         //else
@@ -75,7 +75,7 @@ namespace Player
                     {
                         Command command = new Command(Command.CommandType.Mine, hit.point, false);
                         selectionManager.SelectedUnits.OverrideCommand(command);
-                        CmdSendBasicCommand(command.Target, (int) command.type, command.IsSingle);
+                        CmdSendBasicCommand(command.Target, (int) command.type, command.SingleCommand);
                     }
                 }
             }

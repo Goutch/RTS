@@ -10,6 +10,9 @@ public class Selectable : NetworkBehaviour
 {
     private SelectionManager manager;
     private UnitController controller;
+    private Crowd currentCrowd;
+
+    public Crowd CurrentCrowd => currentCrowd;
 
     public void InitClient()
     {
@@ -37,12 +40,14 @@ public class Selectable : NetworkBehaviour
         screenPos.y = Screen.height - screenPos.y;
         if (bounds.Contains(screenPos)) // && !manager.SelectedUnits.Composants.Contains(controller))
         {
-            manager.SelectedUnits.Add(controller);
+            manager.SelectedUnits.Composants.Add(controller);
             controller.SetSelected(true);
             CmdOnAddSelection();
+            currentCrowd = manager.SelectedUnits;
             return;
         }
 
+        currentCrowd = null;
         controller.SetSelected(false);
     }
 

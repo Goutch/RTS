@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using DefaultNamespace;
+using UnitComponent;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -17,9 +18,9 @@ namespace Selection
         [SerializeField] private Texture2D selectionHightlight;
         private SavedSelectionGrid savedSelections;
         private SelectedUnitAbilitiesUI abilitiesUI;
-        private UnitGroup selectedUnits;
+        private Crowd selectedUnits;
 
-        public UnitGroup SelectedUnits
+        public Crowd SelectedUnits
         {
             get { return selectedUnits; }
         }
@@ -37,7 +38,7 @@ namespace Selection
 
         private void Awake()
         {
-            selectedUnits = new UnitGroup();
+            selectedUnits = new Crowd();
             savedSelections = GetComponentInChildren<SavedSelectionGrid>();
             beiginPosition = -Vector2.one;
             collider = GetComponent<BoxCollider2D>();
@@ -82,16 +83,9 @@ namespace Selection
         {
             if (savedSelections.IsGroupSaved(index))
             {
-                foreach (IUnit u in selectedUnits.Composants)
-                {
-                    u.SetSelected(false);
-                }
-
+                selectedUnits.SetSelected(false);
                 selectedUnits = savedSelections.GetSelection(index);
-                foreach (IUnit u in selectedUnits.Composants)
-                {
-                    u.SetSelected(true);
-                }
+                selectedUnits.SetSelected(true);
             }
         }
 
@@ -139,10 +133,7 @@ namespace Selection
             if (!hasAuthority)
             {
                 selectedUnits.Composants.Clear();
-                foreach (IUnit u in selectedUnits.Composants)
-                {
-                    u.SetSelected(false);
-                }
+                selectedUnits.SetSelected(false);
             }
         }
 

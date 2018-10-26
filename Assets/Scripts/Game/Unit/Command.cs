@@ -20,7 +20,7 @@ namespace DefaultNamespace
 
         private Vector2 target;
 
-        private bool isSingle;
+        private bool _singleCommand;
 
         public CommandType Type => type;
 
@@ -28,21 +28,21 @@ namespace DefaultNamespace
 
         public Vector2 Target => target;
 
-        public bool IsSingle => isSingle;
+        public bool SingleCommand => _singleCommand;
 
 
-        public Command(CommandType type, Vector2 target,bool isSingle)
+        public Command(CommandType type, Vector2 target,bool singleCommand)
         {
             this.target = target;
             this.type = type;
-            this.isSingle =isSingle;
+            this._singleCommand =singleCommand;
         }
 
-        public Command(CommandType type, Transform targetTransform,bool isSingle)
+        public Command(CommandType type, Transform targetTransform,bool singleCommand)
         {
             this.targetTransform = targetTransform;
             this.type = type;
-            this.isSingle =isSingle;
+            this._singleCommand =singleCommand;
         }
 
         public Command()

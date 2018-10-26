@@ -29,7 +29,7 @@ namespace Game.Map
             gridPos = position;
             this.walkable = walkable;
             worldPos = WorldMap.INSTANCE.WorldGrid.CellToWorld(position);
-            worldPos = new Vector3(worldPos.x + .16f, worldPos.y + .16f, 0);
+            worldPos = new Vector3(worldPos.x+.5f, worldPos.y + .5f, 0);
         }
     }
 }

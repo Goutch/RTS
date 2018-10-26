@@ -21,14 +21,14 @@ public class SavedSelectionGrid : MonoBehaviour
         }
     }
 
-    public void SaveSelection(UnitGroup group,int index)
+    public void SaveSelection(Crowd group,int index)
     {
         savedSelectionSlots[index].gameObject.active = true;
         savedSelectionSlots[index].SavedGroup=group;
         //cant acces sprite from group
     }
 
-    public void AddToSavedSelection(UnitGroup group,int index)
+    public void AddToSavedSelection(Crowd group,int index)
     {
         savedSelectionSlots[index].addToGroup(group);
     }
@@ -43,7 +43,7 @@ public class SavedSelectionGrid : MonoBehaviour
         return false;
     }
 
-    public UnitGroup GetSelection(int index)
+    public Crowd GetSelection(int index)
     {
         return savedSelectionSlots[index].SavedGroup;
     }
